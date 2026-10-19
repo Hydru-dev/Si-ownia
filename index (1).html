@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Dziennik: dieta i siłownia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E8EBF1;--card:#F7F8FB;--ink:#17203A;--mut:#5C6580;--line:#CBD0DE;--acc:#E8480C;--acc-ink:#fff;--ok:#1F7A4D;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10131C;--card:#191E2B;--ink:#EAEDF6;--mut:#9099B3;--line:#2B3245;--acc:#FF6B35;--acc-ink:#10131C;--ok:#4CC38A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10131C;--card:#191E2B;--ink:#EAEDF6;--mut:#9099B3;--line:#2B3245;--acc:#FF6B35;--acc-ink:#10131C;--ok:#4CC38A;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:560px;margin:0 auto;padding:16px 16px 96px}
+h1,h2,.num{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;margin:0}
+h2{font-size:22px;margin:22px 0 10px}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.daynav h1{font-size:30px;text-transform:none;text-align:center;flex:1;line-height:1.05}
+.daynav small{display:block;font:500 14px Barlow,sans-serif;color:var(--mut);margin-top:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+.ic{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hero .num{font-size:64px;line-height:.9}
+.hero .of{color:var(--mut);font-size:15px;text-align:right}
+.bar{height:12px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:12px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:6px}
+.bar.over i{background:var(--ok)}
+.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;text-align:center}
+.macros b{display:block;font:700 24px "Barlow Condensed",sans-serif}
+.macros span{font-size:13px;color:var(--mut)}
+form{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+label{font-size:13px;color:var(--mut);display:grid;gap:3px}
+input,select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px;min-height:44px}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.go{background:var(--acc);color:var(--acc-ink);border:0;border-radius:10px;min-height:46px;font-weight:600}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item p{margin:0}
+.item .sub{font-size:13px;color:var(--mut)}
+.del{border:0;background:none;color:var(--mut);font-size:22px;width:44px;height:44px;flex:none}
+.hint{font-size:14px;color:var(--mut);margin:0}
+.hint button{border:0;background:none;color:var(--acc);font-weight:600;padding:0;text-decoration:underline}
+.empty{color:var(--mut);margin:6px 0 0}
+nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,1fr);background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{border:0;background:none;padding:14px 1px;font:700 15px "Barlow Condensed",sans-serif;color:var(--mut);border-top:3px solid transparent}
+nav button[aria-current="page"]{color:var(--ink);border-top-color:var(--acc)}
+svg.ch{width:100%;height:auto;display:block;margin-top:8px}
+.ch text{fill:var(--mut);font:12px Barlow,sans-serif}
+.ch .ln{stroke:var(--acc);stroke-width:2.5;fill:none;stroke-linejoin:round}
+.ch .dt{fill:var(--acc)}
+.ch .gr{stroke:var(--line);stroke-width:1}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats b{display:block;font:700 28px "Barlow Condensed",sans-serif}
+.stats span{font-size:13px;color:var(--mut)}
+.goals{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mh{display:flex;align-items:center;gap:10px}
+.mh b{font:700 21px "Barlow Condensed",sans-serif}
+.mh span{flex:1;color:var(--mut);font-size:14px}
+.mini{border:1px solid var(--line);background:var(--bg);border-radius:20px;min-height:40px;padding:0 14px;font-weight:600}
+body.kb nav{display:none}
+body.kb main{padding-bottom:24px}
+.chips{display:flex;gap:8px;margin-top:14px}
+.chips button{flex:1;min-height:44px;border-radius:22px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.rc h3{font:700 22px "Barlow Condensed",sans-serif;margin:0}
+.rc .sub{font-size:14px;color:var(--mut);margin:4px 0;white-space:pre-line}
+.rc .ing{margin:8px 0 4px}
+.exb{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;min-height:44px;display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-top:8px}
+.exb span{color:var(--mut);font-size:14px}
+.chk{flex:1;display:flex;align-items:center;gap:12px;min-height:48px;text-align:left;border:0;background:none;padding:6px 0}
+.box{width:28px;height:28px;border-radius:8px;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-weight:700}
+.chk.on .box{background:var(--ok);border-color:var(--ok);color:var(--acc-ink)}
+.chips.wrap{flex-wrap:wrap}
+.chips.wrap button{flex:none;padding:0 14px}
+textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px;resize:vertical}
+textarea:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav id="nav">
+  <button data-v="diet">Dieta</button>
+  <button data-v="rec">Przepisy</button>
+  <button data-v="train">Trening</button>
+  <button data-v="sleep">Zdrowie</button>
+  <button data-v="prog">Postępy</button>
+  <button data-v="me">Profil</button>
+</nav>
+<script>
+var K='dziennik-v1',S=null,mem=null;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+S=S||mem||{goals:{k:2200,p:150},meals:[],sets:[],weights:[]};
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){mem=S}}
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+var TODAY=ymd(new Date()),cur=TODAY,view='diet',pe='';
+var BASE=['Wyciskanie leżąc','Przysiad ze sztangą','Martwy ciąg','Wyciskanie nad głowę','Podciąganie','Wiosłowanie sztangą','Dipy','Uginanie ramion','Wyciskanie na skosie','Wypychanie na suwnicy','Martwy ciąg rumuński','Wspięcia na palce'];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function shift(n){var d=new Date(cur+'T12:00');d.setDate(d.getDate()+n);cur=ymd(d);render()}
+function dlabel(d){return new Date(d+'T12:00').toLocaleDateString('pl-PL',{day:'numeric',month:'short'})}
+function head(){
+  var d=new Date(cur+'T12:00'),t=d.toLocaleDateString('pl-PL',{weekday:'long'}),s=d.toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'});
+  return '<div class="daynav"><button class="ic" onclick="shift(-1)" aria-label="Poprzedni dzień">‹</button><h1>'+(cur===TODAY?'Dziś':t)+'<small>'+s+'</small></h1><button class="ic" onclick="shift(1)" aria-label="Następny dzień">›</button></div>';
+}
+function sum(a,k){return a.reduce(function(s,x){return s+(+x[k]||0)},0)}
+function num(v){return v===''||v==null?0:parseFloat(String(v).replace(',','.'))||0}
+
+function diet(){return diet0()+supps()}
+function diet0(){
+  var m=S.meals.filter(function(x){return x.d===cur}),k=sum(m,'k'),g=S.goals,pct=Math.min(100,g.k?k/g.k*100:0),left=g.k-k;
+  var h=head();
+  h+='<div class="card"><div class="hero"><div class="num">'+Math.round(k)+'</div><div class="of">z '+g.k+' kcal<br>'+(left>=0?'zostało '+Math.round(left):'ponad o '+Math.round(-left))+'</div></div><div class="bar"><i style="width:'+pct+'%"></i></div>';
+  h+='<div class="macros"><div><b>'+Math.round(sum(m,'p'))+' g</b><span>białko (cel '+g.p+')</span></div><div><b>'+Math.round(sum(m,'c'))+' g</b><span>węglowodany</span></div><div><b>'+Math.round(sum(m,'f'))+' g</b><span>tłuszcze</span></div></div></div>';
+  h+='<h2>Dodaj posiłek</h2><form id="mf" class="card" onsubmit="addMeal(event)" style="margin-top:0"><label>Nazwa<input name="n" required placeholder="np. owsianka z bananem" autocomplete="off"></label><label>Posiłek<select name="t">'+mealOpts()+'</select></label><div class="row"><label>kcal<input name="k" inputmode="decimal" required></label><label>Białko g<input name="p" inputmode="decimal"></label><label>Węgl. g<input name="c" inputmode="decimal"></label><label>Tłuszcz g<input name="f" inputmode="decimal"></label></div><button class="go">Dodaj posiłek</button></form>';
+  h+='<h2>Posiłki</h2>'+mealSections(m);
+  var rec=[],seen={};S.meals.slice().reverse().forEach(function(x){if(!seen[x.n]&&rec.length<6){seen[x.n]=1;rec.push(x)}});
+  if(rec.length){h+='<h2>Szybko dodaj ponownie</h2><div class="card" style="margin-top:0">';rec.forEach(function(x){h+='<div class="item"><div><p>'+esc(x.n)+'</p><p class="sub">'+Math.round(x.k)+' kcal · B '+Math.round(x.p)+'</p></div><button class="go" style="padding:0 16px" onclick="reMeal('+x.id+')">Dodaj</button></div>'});h+='</div>'}
+  h+='<h2>Cele dzienne</h2><form class="card goals" style="margin-top:0" onsubmit="setGoals(event)"><label>kcal<input name="k" inputmode="numeric" value="'+g.k+'"></label><label>Białko g<input name="p" inputmode="numeric" value="'+g.p+'"></label><button class="go" style="padding:0 16px">Zapisz</button></form>';
+  return h;
+}
+function addMeal(e){e.preventDefault();var f=e.target;mt=f.t.value;S.meals.push({id:Date.now(),d:cur,t:mt,n:f.n.value.trim(),k:num(f.k.value),p:num(f.p.value),c:num(f.c.value),f:num(f.f.value)});save();render()}
+function reMeal(id){var x=S.meals.filter(function(m){return m.id===id})[0];if(!x)return;S.meals.push({id:Date.now(),d:cur,t:x.t||mt,n:x.n,k:x.k,p:x.p,c:x.c,f:x.f});save();render()}
+function delMeal(id){S.meals=S.meals.filter(function(m){return m.id!==id});save();render()}
+function setGoals(e){e.preventDefault();var f=e.target;S.goals={k:num(f.k.value)||S.goals.k,p:num(f.p.value)||S.goals.p};save();render()}
+
+function exNames(){var u={};S.sets.forEach(function(x){u[x.e]=1});BASE.forEach(function(b){u[b]=1});(S.myex||[]).forEach(function(x){u[x.n]=1});Object.keys(EXL).forEach(function(k){EXL[k].split(',').forEach(function(n){u[n]=1})});return Object.keys(u).sort()}
+function lastOf(e){var l=S.sets.filter(function(x){return x.e.toLowerCase()===e.toLowerCase()&&x.d<cur}).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.id-a.id});return l[0]}
+function train(){return train0()+plans()}
+function train0(){
+  var t=S.sets.filter(function(x){return x.d===cur}),h=head();
+  h+='<h2>Dodaj serię</h2><form class="card" style="margin-top:0" onsubmit="addSet(event)"><label>Ćwiczenie<input name="e" list="exl" required value="'+esc(pe)+'" oninput="hintEx(this.value)" autocomplete="off" placeholder="np. Przysiad ze sztangą"></label><datalist id="exl">'+exNames().map(function(n){return'<option value="'+esc(n)+'">'}).join('')+'</datalist><p class="hint" id="hint"></p><div class="row3"><label>Ciężar kg<input name="kg" inputmode="decimal" required></label><label>Powtórzenia<input name="r" inputmode="numeric" required></label><label>Serie<input name="s" inputmode="numeric" value="1"></label></div><button class="go">Zapisz serię</button></form>';
+  h+='<h2>Dzisiejszy trening</h2><div class="card" style="margin-top:0">';
+  if(!t.length)h+='<p class="empty">Nic jeszcze nie zapisano.</p>';
+  t.forEach(function(x){h+='<div class="item"><div><p>'+esc(x.e)+'</p><p class="sub">'+x.kg+' kg × '+x.r+' powt. × '+x.s+' '+(x.s==1?'seria':'serie')+'</p></div><button class="del" onclick="delSet('+x.id+')" aria-label="Usuń serię">×</button></div>'});
+  if(t.length)h+='<p class="hint" style="margin-top:8px">Objętość: '+Math.round(t.reduce(function(s,x){return s+x.kg*x.r*x.s},0)).toLocaleString('pl-PL')+' kg</p>';
+  h+='</div>';
+  return h;
+}
+function hintEx(v){var el=document.getElementById('hint');if(!el)return;pe=v;var l=v.trim()?lastOf(v.trim()):null;
+  if(!l){el.innerHTML='';return}
+  el.innerHTML='Ostatnio ('+dlabel(l.d)+'): '+l.kg+' kg × '+l.r+' × '+l.s+' <button type="button" onclick="fillEx()">użyj</button>';
+}
+function fillEx(){var f=document.querySelector('form input[name=e]').form,l=lastOf(f.e.value.trim());if(!l)return;f.kg.value=l.kg;f.r.value=l.r;f.s.value=l.s}
+function addSet(e){e.preventDefault();var f=e.target;S.sets.push({id:Date.now(),d:cur,e:f.e.value.trim(),kg:num(f.kg.value),r:Math.round(num(f.r.value)),s:Math.max(1,Math.round(num(f.s.value)))});pe=f.e.value.trim();save();render()}
+function delSet(id){S.sets=S.sets.filter(function(x){return x.id!==id});save();render()}
+
+function chart(pts,unit){
+  if(pts.length<2)return '<p class="empty">Potrzeba co najmniej dwóch pomiarów, żeby narysować wykres.</p>';
+  var W=320,H=150,P=30,ys=pts.map(function(p){return p.y}),lo=Math.min.apply(0,ys),hi=Math.max.apply(0,ys);
+  if(hi===lo){hi+=1;lo-=1}
+  var x=function(i){return P+i*(W-P-10)/(pts.length-1)},y=function(v){return H-24-(v-lo)/(hi-lo)*(H-44)};
+  var s='<svg class="ch" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Wykres"><line class="gr" x1="'+P+'" x2="'+(W-10)+'" y1="'+y(hi)+'" y2="'+y(hi)+'"/><line class="gr" x1="'+P+'" x2="'+(W-10)+'" y1="'+y(lo)+'" y2="'+y(lo)+'"/>';
+  s+='<text x="0" y="'+(y(hi)+4)+'">'+(+hi.toFixed(1))+'</text><text x="0" y="'+(y(lo)+4)+'">'+(+lo.toFixed(1))+'</text>';
+  s+='<polyline class="ln" points="'+pts.map(function(p,i){return x(i)+','+y(p.y)}).join(' ')+'"/>';
+  pts.forEach(function(p,i){s+='<circle class="dt" cx="'+x(i)+'" cy="'+y(p.y)+'" r="3.5"/>'});
+  s+='<text x="'+P+'" y="'+(H-4)+'">'+dlabel(pts[0].d)+'</text><text x="'+(W-10)+'" y="'+(H-4)+'" text-anchor="end">'+dlabel(pts[pts.length-1].d)+'</text></svg>';
+  return s;
+}
+var pex='';
+function prog(){
+  var w=S.weights.slice().sort(function(a,b){return a.d<b.d?-1:1}),h='<div class="daynav"><h1>Postępy</h1></div>';
+  var wk=[];for(var i=0;i<7;i++){var d=new Date(TODAY+'T12:00');d.setDate(d.getDate()-i);wk.push(ymd(d))}
+  var dd=wk.filter(function(d){return S.meals.some(function(m){return m.d===d})}),kc=dd.length?Math.round(S.meals.filter(function(m){return wk.indexOf(m.d)>-1}).reduce(function(s,m){return s+m.k},0)/dd.length):0;
+  var tr=wk.filter(function(d){return S.sets.some(function(x){return x.d===d})}).length;
+  h+='<div class="card stats"><div><b>'+(kc||'–')+'</b><span>średnie kcal / dzień (7 dni)</span></div><div><b>'+tr+'</b><span>dni z treningiem (7 dni)</span></div></div>';
+  h+='<h2>Waga ciała</h2><form class="card goals" style="margin-top:0" onsubmit="addW(event)"><label>Waga kg<input name="kg" inputmode="decimal" required></label><label>Data<input name="d" type="date" value="'+TODAY+'"></label><button class="go" style="padding:0 16px">Zapisz</button></form>';
+  h+='<div class="card">'+(w.length?'<div class="stats"><div><b>'+w[w.length-1].kg+' kg</b><span>ostatni pomiar</span></div><div><b>'+(w.length>1?((w[w.length-1].kg-w[0].kg>0?'+':'')+(+(w[w.length-1].kg-w[0].kg).toFixed(1))+' kg'):'–')+'</b><span>zmiana od początku</span></div></div>':'')+chart(w.map(function(x){return{d:x.d,y:x.kg}}))+'</div>';
+  var ex=exNames().filter(function(n){return S.sets.some(function(x){return x.e===n})});
+  h+='<h2>Siła</h2><div class="card" style="margin-top:0">';
+  if(!ex.length)h+='<p class="empty">Zapisz pierwsze serie w zakładce Trening, a tu pojawi się wykres.</p>';
+  else{if(ex.indexOf(pex)<0)pex=ex[0];
+    h+='<label>Ćwiczenie<select onchange="pex=this.value;render()">'+ex.map(function(n){return'<option'+(n===pex?' selected':'')+'>'+esc(n)+'</option>'}).join('')+'</select></label>';
+    var by={};S.sets.filter(function(x){return x.e===pex}).forEach(function(x){by[x.d]=Math.max(by[x.d]||0,x.kg)});
+    var pts=Object.keys(by).sort().map(function(d){return{d:d,y:by[d]}});
+    h+='<p class="hint" style="margin-top:8px">Najcięższa seria w danym dniu (kg)</p>'+chart(pts);
+    if(pts.length)h+='<p class="hint">Rekord: <b>'+Math.max.apply(0,pts.map(function(p){return p.y}))+' kg</b></p>';
+  }
+  h+='</div>';
+  return h;
+}
+function addW(e){e.preventDefault();var f=e.target,d=f.d.value||TODAY;S.weights=S.weights.filter(function(x){return x.d!==d});S.weights.push({d:d,kg:num(f.kg.value)});save();render()}
+
+var REC={'Redukcja':[
+{n:'Owsianka proteinowa z jabłkiem',k:360,p:23,c:59,f:4,i:'50 g płatków owsianych, 150 g skyru, 1 jabłko, cynamon',s:'Zalej płatki gorącą wodą na 5 minut, wmieszaj skyr, dodaj pokrojone jabłko i cynamon.'},
+{n:'Omlet ze szpinakiem i fetą',k:270,p:24,c:3,f:16,i:'2 jajka, 2 białka, garść szpinaku, 30 g fety',s:'Roztrzep jajka z białkami, wlej na patelnię, dodaj szpinak i fetę, smaż pod przykryciem 4 minuty.'},
+{n:'Kurczak z ryżem i brokułem',k:475,p:43,c:55,f:8,i:'150 g piersi z kurczaka, 60 g ryżu (suchego), 150 g brokułu, 1 łyżeczka oleju',s:'Ugotuj ryż, kurczaka smaż 6–8 minut z każdej strony, brokuł gotuj na parze 5 minut.'},
+{n:'Sałatka z tuńczykiem i fasolą',k:350,p:35,c:22,f:12,i:'1 puszka tuńczyka w wodzie, 100 g czerwonej fasoli z puszki, ogórek, pomidor, 1 łyżka oliwy',s:'Odcedź tuńczyka i fasolę, pokrój warzywa, wymieszaj z oliwą, solą i pieprzem.'},
+{n:'Twaróg z warzywami i chlebem',k:380,p:40,c:40,f:4,i:'200 g chudego twarogu, rzodkiewki, ogórek, szczypiorek, 2 kromki chleba razowego',s:'Rozgnieć twaróg widelcem, wymieszaj z pokrojonymi warzywami i podaj z chlebem.'}],
+'Masa':[
+{n:'Owsianka z masłem orzechowym i bananem',k:725,p:28,c:110,f:20,i:'100 g płatków owsianych, 300 ml mleka 2%, 1 banan, 1 łyżka masła orzechowego',s:'Gotuj płatki w mleku 5 minut, dodaj pokrojonego banana i masło orzechowe.'},
+{n:'Makaron z mielonym indykiem',k:780,p:50,c:80,f:28,i:'100 g makaronu (suchego), 150 g mielonego indyka, 150 g passaty, 1 łyżka oliwy, 20 g sera',s:'Zrumień mięso na oliwie, wlej passatę i duś 10 minut, wymieszaj z makaronem i posyp serem.'},
+{n:'Burrito z kurczakiem i ryżem',k:755,p:54,c:93,f:16,i:'1 duża tortilla, 150 g kurczaka, 60 g ryżu (suchego), 60 g fasoli, 30 g sera, salsa',s:'Podsmaż kurczaka, zwiń wszystko w tortillę i opiecz na patelni po 2 minuty z każdej strony.'},
+{n:'Koktajl kaloryczny',k:610,p:44,c:72,f:18,i:'300 ml mleka, 1 banan, 40 g płatków owsianych, 30 g odżywki białkowej, 1 łyżka masła orzechowego',s:'Zmiksuj wszystko na gładko. Dobry po treningu albo jako dodatkowy posiłek.'},
+{n:'Łosoś z ziemniakami i fasolką',k:675,p:39,c:60,f:30,i:'150 g łososia, 300 g ziemniaków, 150 g fasolki szparagowej, 1 łyżka oliwy',s:'Ziemniaki gotuj 20 minut, łososia piecz w 200°C przez 12–15 minut, fasolkę gotuj 6 minut i polej oliwą.'}]};
+var rcat='Redukcja';
+function rec(){var h=rec0();if(h.indexOf('class="card rc"')<0)h+='<p class="empty" style="margin-top:12px">Brak pasujących przepisów.</p>';if(rTot>0)h+='<p class="hint" style="margin-top:10px">Pokazano '+rShown+' z '+rTot+'.</p>';if(rTot>rShown)h+='<button class="go" style="width:100%;margin-top:12px" onclick="rMax+=30;render()">Pokaż więcej ('+(rTot-rShown)+')</button>';return h+recForm()}
+function rec0(){
+  var h='<div class="daynav"><h1>Przepisy</h1></div><div class="chips">'+Object.keys(REC).map(function(k){return '<button aria-pressed="'+(k===rcat)+'" data-k="'+k+'" onclick="rcat=this.dataset.k;rMax=30;render()">'+k+'</button>'}).join('')+'</div>';
+  h+='<input id="rq" type="search" placeholder="Szukaj przepisu" value="'+esc(rq)+'" oninput="srchR(this)" style="margin-top:12px"><label style="margin-top:10px">Dodaj do posiłku<select onchange="rmt=this.value">'+rmOpts()+'</select></label><p class="hint" style="margin-top:10px">Wartości na 1 porcję, szacunkowe. Przepis dodasz do dnia: '+dlabel(cur)+'.</p>';
+  rTot=0;rShown=0;allRec().forEach(function(r,i){if(rq&&r.n.toLowerCase().indexOf(rq.toLowerCase())<0)return;rTot++;if(rShown>=rMax)return;rShown++;h+='<div class="card rc"><h3>'+esc(r.n)+'</h3><p class="sub">'+r.k+' kcal · B '+r.p+' · W '+r.c+' · T '+r.f+'</p><p class="ing">'+esc(r.i)+'</p><p class="sub">'+esc(r.s)+'</p><button class="go" style="width:100%;margin-top:6px" onclick="addRec('+i+')">Dodaj do dnia</button>'+(r.id?'<p class="hint" style="margin-top:8px">Własny przepis · <button onclick="delRec('+r.id+')">usuń</button></p>':'')+'</div>'});
+  return h;
+}
+function addRec(i){var r=allRec()[i];S.meals.push({id:Date.now(),d:cur,t:rmt||guessMt(r.n),n:r.n,k:r.k,p:r.p,c:r.c,f:r.f});save();view='diet';render();window.scrollTo(0,0)}
+
+var PLANS={'FBW 3 dni':[['Dzień A',[['Przysiad ze sztangą','3×8'],['Wyciskanie leżąc','3×8'],['Wiosłowanie sztangą','3×10'],['Wyciskanie nad głowę','3×10'],['Uginanie ramion','2×12']]],['Dzień B',[['Martwy ciąg','3×5'],['Wyciskanie na skosie','3×10'],['Podciąganie','3×6–8'],['Wypychanie na suwnicy','3×12'],['Dipy','2×10']]]],
+'Push/Pull/Legs':[['Push',[['Wyciskanie leżąc','4×6–8'],['Wyciskanie nad głowę','3×8'],['Wyciskanie na skosie','3×10'],['Dipy','3×10']]],['Pull',[['Martwy ciąg','3×5'],['Podciąganie','4×6–10'],['Wiosłowanie sztangą','3×8'],['Uginanie ramion','3×12']]],['Legs',[['Przysiad ze sztangą','4×6–8'],['Martwy ciąg rumuński','3×8'],['Wypychanie na suwnicy','3×10'],['Wspięcia na palce','4×12']]]]};
+var plan='FBW 3 dni';
+function plans(){return plans0()+exLib()+exForm()}
+function plans0(){
+  var h='<h2>Przykładowe plany</h2><div class="chips wrap" style="margin-top:0">'+planKeys().map(function(k){return '<button aria-pressed="'+(k===plan)+'" data-k="'+k+'" onclick="plan=this.dataset.k;render()">'+k+'</button>'}).join('')+'</div>';
+  planData().forEach(function(dn){h+='<div class="card"><b>'+esc(dn[0])+'</b>';dn[1].forEach(function(x){h+='<button class="exb" data-e="'+esc(x[0])+'" onclick="useEx(this.dataset.e)">'+esc(x[0])+'<span>'+esc(x[1])+'</span></button>'+(x[2]?'<p class="hint" style="margin-top:4px"><button onclick="delEx('+x[2]+')">usuń ćwiczenie</button></p>':'')});h+='</div>'});
+  h+='<div class="card"><b>Jak robić progres</b><p class="hint" style="margin-top:6px">Zostań przy tym samym ciężarze, aż we wszystkich seriach zrobisz górną liczbę powtórzeń. Wtedy dodaj 2,5 kg i wróć do dolnego zakresu. Między seriami w ćwiczeniach wielostawowych odpoczywaj 2–3 minuty. Dotknij ćwiczenia, żeby wpisać je do formularza na górze.</p></div>';
+  return h;
+}
+function useEx(n){pe=n;render();window.scrollTo(0,0)}
+
+function o(v,l,c){return '<option value="'+v+'"'+(String(v)===String(c)?' selected':'')+'>'+l+'</option>'}
+function calc(){var b=S.bio;if(!b||!b.w||!b.h||!b.a)return null;var bmr=10*b.w+6.25*b.h-5*b.a+(b.x==='k'?-161:5),t=bmr*(+b.v||1.55)+(b.g==='red'?-400:b.g==='masa'?300:0);return{k:Math.round(Math.max(t,bmr)/10)*10,p:Math.round(2*b.w)}}
+function me(){
+  var b=S.bio||{},h='<div class="daynav"><h1>Profil</h1></div>';
+  h+='<form class="card" onsubmit="saveBio(event)"><div class="row2"><label>Waga kg<input name="w" inputmode="decimal" required value="'+(b.w||'')+'"></label><label>Wzrost cm<input name="h" inputmode="numeric" required value="'+(b.h||'')+'"></label></div>';
+  h+='<div class="row2"><label>Wiek<input name="a" inputmode="numeric" value="'+(b.a||'')+'"></label><label>Płeć<select name="x">'+o('m','Mężczyzna',b.x)+o('k','Kobieta',b.x)+'</select></label></div>';
+  h+='<label>Aktywność<select name="v">'+o('1.375','Mała (do 3 treningów tygodniowo)',b.v||'1.55')+o('1.55','Umiarkowana (3–5 treningów)',b.v||'1.55')+o('1.725','Duża (6–7 treningów)',b.v||'1.55')+'</select></label>';
+  h+='<label>Cel<select name="g">'+o('red','Redukcja masy',b.g||'utr')+o('utr','Utrzymanie',b.g||'utr')+o('masa','Zwiększenie masy',b.g||'utr')+'</select></label><button class="go">Zapisz profil</button><p class="hint">Zapis dodaje też dzisiejszą wagę do wykresu w Postępach.</p></form>';
+  if(b.w&&b.h){var bmi=b.w/Math.pow(b.h/100,2),t=calc();
+    h+='<div class="card stats"><div><b>'+b.w+' kg · '+b.h+' cm</b><span>aktualne dane</span></div><div><b>'+(+bmi.toFixed(1))+'</b><span>BMI (nie rozróżnia mięśni od tłuszczu)</span></div></div>';
+    if(t)h+='<div class="card"><b>Orientacyjne cele dzienne</b><p class="hint" style="margin:6px 0 10px">'+t.k+' kcal i '+t.p+' g białka (2 g na kg masy ciała). To szacunek: po 2–3 tygodniach skoryguj kalorie według zmiany wagi.</p><button class="go" style="width:100%" onclick="applyGoals()">Ustaw jako cele dzienne</button></div>';
+    else h+='<p class="hint" style="margin-top:12px">Podaj wiek, a wyliczę orientacyjne kalorie i białko.</p>';
+  }
+  return h;
+}
+function saveBio(e){e.preventDefault();var f=e.target;S.bio={w:num(f.w.value),h:num(f.h.value),a:num(f.a.value),x:f.x.value,v:f.v.value,g:f.g.value};S.weights=S.weights.filter(function(x){return x.d!==TODAY});S.weights.push({d:TODAY,kg:S.bio.w});save();render()}
+function applyGoals(){var t=calc();if(!t)return;S.goals={k:t.k,p:t.p};save();view='diet';render();window.scrollTo(0,0)}
+
+var PRE=[['Kreatyna','3–5 g'],['Witamina D3','wg opakowania'],['Omega-3','wg opakowania'],['Magnez','wg opakowania'],['Odżywka białkowa','1 miarka']];
+function supps(){
+  var L=S.supps||[],done=(S.sl&&S.sl[cur])||[],n=L.filter(function(x){return done.indexOf(x.id)>-1}).length;
+  var h='<h2>Suplementy</h2><div class="card" style="margin-top:0">';
+  if(!L.length)h+='<p class="empty">Dodaj suplementy, które bierzesz, a każdego dnia odhaczysz je tutaj.</p>';
+  else h+='<p class="hint">Wzięte tego dnia: '+n+' z '+L.length+'</p>';
+  L.forEach(function(x){var on=done.indexOf(x.id)>-1;h+='<div class="item"><button class="chk'+(on?' on':'')+'" onclick="togS('+x.id+')" aria-pressed="'+on+'"><span class="box">'+(on?'✓':'')+'</span><span>'+esc(x.n)+'<span class="sub" style="display:block">'+esc(x.dose||'')+'</span></span></button><button class="del" onclick="delS('+x.id+')" aria-label="Usuń suplement">×</button></div>'});
+  h+='</div>';
+  var av=PRE.filter(function(p){return !L.some(function(x){return x.n===p[0]})});
+  if(av.length)h+='<div class="chips wrap" style="margin-top:10px">'+av.map(function(p){return '<button data-n="'+esc(p[0])+'" data-d="'+esc(p[1])+'" onclick="addS(this.dataset.n,this.dataset.d)">+ '+esc(p[0])+'</button>'}).join('')+'</div>';
+  h+='<form class="card goals" onsubmit="addSF(event)"><label>Własny suplement<input name="n" required autocomplete="off"></label><label>Dawka<input name="d" autocomplete="off"></label><button class="go" style="padding:0 16px">Dodaj</button></form><p class="hint" style="margin-top:10px">Dawkę dobierz według opakowania. Przy chorobach lub lekach zapytaj lekarza albo farmaceutę.</p>';
+  return h;
+}
+function addS(n,d){S.supps=S.supps||[];S.supps.push({id:Date.now(),n:n,dose:d});save();render()}
+function addSF(e){e.preventDefault();var f=e.target;addS(f.n.value.trim(),f.d.value.trim())}
+function delS(id){S.supps=(S.supps||[]).filter(function(x){return x.id!==id});save();render()}
+function togS(id){S.sl=S.sl||{};var a=S.sl[cur]||[],i=a.indexOf(id);if(i>-1)a.splice(i,1);else a.push(id);S.sl[cur]=a;save();render()}
+
+function dur(b,w){var m=function(t){var p=t.split(':');return +p[0]*60+ +p[1]};var d=m(w)-m(b);if(d<=0)d+=1440;return d}
+function hm(m){return Math.floor(m/60)+' h '+String(m%60).padStart(2,'0')+' min'}
+function sleep(){
+  var L=S.sleep||[],e=L.filter(function(x){return x.d===cur})[0],g=S.sg||8,h=head();
+  h+=steps()+'<h2 style="margin-bottom:0">Sen</h2>';h+='<form class="card" onsubmit="addSl(event)"><div class="row2"><label>Poszedłem spać<input name="b" type="time" required value="'+(e?e.b:'23:00')+'"></label><label>Wstałem<input name="w" type="time" required value="'+(e?e.w:'07:00')+'"></label></div><label>Jakość snu<select name="q">'+[1,2,3,4,5].map(function(i){return o(i,i+' z 5',e?e.q:3)}).join('')+'</select></label><div class="row2"><label>Głęboki sen (min)<input name="dp" type="number" inputmode="numeric" min="0" max="900" placeholder="opcjonalnie" value="'+(e&&e.dp!=null?e.dp:'')+'"></label><label>Płytki sen (min)<input name="lt" type="number" inputmode="numeric" min="0" max="900" placeholder="opcjonalnie" value="'+(e&&e.lt!=null?e.lt:'')+'"></label></div><button class="go">'+(e?'Zaktualizuj sen':'Zapisz sen')+'</button><p class="hint" id="slm" style="color:var(--acc)"></p><p class="hint">Dzień oznacza poranek, w którym wstałeś.</p></form>';
+  if(e){var mi=dur(e.b,e.w);h+='<div class="card"><div class="hero"><div class="num" style="font-size:44px;line-height:1">'+hm(mi)+'</div><div class="of">cel '+g+' h<br>'+(mi>=g*60?'cel osiągnięty':'brakuje '+hm(Math.round(g*60-mi)))+'</div></div><div class="bar'+(mi>=g*60?' over':'')+'"><i style="width:'+Math.min(100,mi/(g*60)*100)+'%"></i></div>'+stages(e,mi)+'<p class="hint" style="margin-top:10px"><button onclick="delSl()">Usuń wpis</button></p></div>'}
+  var last=L.slice().sort(function(a,b){return a.d<b.d?-1:1}).slice(-14),av=last.slice(-7);
+  h+='<h2>Ostatnie noce</h2><div class="card" style="margin-top:0">';
+  if(av.length)h+='<div class="stats"><div><b>'+hm(Math.round(av.reduce(function(s,x){return s+dur(x.b,x.w)},0)/av.length))+'</b><span>średnio ('+av.length+' ostatnich nocy)</span></div><div><b>'+(+(av.reduce(function(s,x){return s+x.q},0)/av.length).toFixed(1))+' / 5</b><span>średnia jakość</span></div></div><p class="hint" style="margin-top:10px">Godziny snu w kolejnych dniach</p>';
+  h+=chart(last.map(function(x){return{d:x.d,y:+(dur(x.b,x.w)/60).toFixed(1)}}))+avgStages(av)+'</div>';
+  h+='<form class="card goals" style="grid-template-columns:1fr auto" onsubmit="setSg(event)"><label>Cel snu w godzinach<input name="g" inputmode="decimal" value="'+g+'"></label><button class="go" style="padding:0 16px">Zapisz</button></form>';
+  h+='<div class="card"><b>Sen a regeneracja</b><p class="hint" style="margin-top:6px">Do regeneracji po treningu celuj w 7–9 godzin. Pomaga stała pora wstawania, mniej ekranu przed snem i kofeina najpóźniej we wczesnych godzinach popołudnia.</p></div>';
+  return h;
+}
+function addSl(e){e.preventDefault();var f=e.target,dp=f.dp.value===''?null:Math.max(0,Math.round(num(f.dp.value))),lt=f.lt.value===''?null:Math.max(0,Math.round(num(f.lt.value))),tot=dur(f.b.value,f.w.value);
+  if((dp||0)+(lt||0)>tot){var m=document.getElementById('slm');if(m)m.textContent='Głęboki i płytki sen razem nie mogą być dłuższe niż cała noc ('+hm(tot)+').';return}
+  S.sleep=(S.sleep||[]).filter(function(x){return x.d!==cur});S.sleep.push({d:cur,b:f.b.value,w:f.w.value,q:+f.q.value,dp:dp,lt:lt});save();render()}
+function delSl(){S.sleep=(S.sleep||[]).filter(function(x){return x.d!==cur});save();render()}
+function setSg(e){e.preventDefault();S.sg=num(e.target.g.value)||8;save();render()}
+
+function allRec(){return REC[rcat].concat((S.myrec||[]).filter(function(x){return x.cat===rcat}))}
+function recForm(){
+  return '<h2>Dodaj własny przepis</h2><form class="card" style="margin-top:0" onsubmit="addMyRec(event)"><label>Nazwa<input name="n" required autocomplete="off"></label><div class="row"><label>kcal<input name="k" inputmode="decimal" required></label><label>Białko g<input name="p" inputmode="decimal"></label><label>Węgl. g<input name="c" inputmode="decimal"></label><label>Tłuszcz g<input name="f" inputmode="decimal"></label></div><label>Składniki<textarea name="i" rows="2"></textarea></label><label>Sposób przygotowania<textarea name="s" rows="3"></textarea></label><button class="go">Zapisz w kategorii: '+rcat+'</button></form>';
+}
+function addMyRec(e){e.preventDefault();var f=e.target;S.myrec=S.myrec||[];S.myrec.push({id:Date.now(),cat:rcat,n:f.n.value.trim(),k:num(f.k.value),p:num(f.p.value),c:num(f.c.value),f:num(f.f.value),i:f.i.value.trim(),s:f.s.value.trim()});save();render()}
+function delRec(id){S.myrec=(S.myrec||[]).filter(function(x){return x.id!==id});save();render()}
+
+function planKeys(){return Object.keys(PLANS).concat('Mój plan')}
+function planData(){
+  if(plan!=='Mój plan')return PLANS[plan];
+  var m=S.myex||[];
+  if(!m.length)return [['Nie masz jeszcze własnych ćwiczeń. Dodaj pierwsze poniżej.',[]]];
+  var g={},o=[];
+  m.forEach(function(x){var d=x.day||'Mój plan';if(!g[d]){g[d]=[];o.push([d,g[d]])}g[d].push([x.n,x.sr||'',x.id])});
+  return o;
+}
+function exForm(){
+  return '<h2>Dodaj własne ćwiczenie</h2><form class="card" style="margin-top:0" onsubmit="addEx(event)"><label>Nazwa ćwiczenia<input name="n" required autocomplete="off" placeholder="np. Face pull"></label><div class="row2"><label>Serie × powtórzenia<input name="sr" autocomplete="off" placeholder="3×12"></label><label>Dzień planu<input name="day" autocomplete="off" placeholder="np. Dzień A"></label></div><button class="go">Dodaj do Mojego planu</button></form>';
+}
+function addEx(e){e.preventDefault();var f=e.target;S.myex=S.myex||[];S.myex.push({id:Date.now(),n:f.n.value.trim(),sr:f.sr.value.trim(),day:f.day.value.trim()});plan='Mój plan';save();render()}
+function delEx(id){S.myex=(S.myex||[]).filter(function(x){return x.id!==id});save();render()}
+
+var rq='',eq='',exg='Klatka';
+var ING={ow:['Płatki owsiane (suche)',375,13,62,7],ry:['Ryż biały (suchy)',355,7,78,0.6],mak:['Makaron (suchy)',355,12,72,1.5],kas:['Kasza gryczana (sucha)',340,12,68,3],kus:['Kuskus (suchy)',360,13,73,1.5],zi:['Ziemniaki',77,2,17,0.1],bat:['Bataty',86,1.6,20,0.1],chl:['Chleb razowy',230,8,42,2],tor:['Tortilla pszenna',300,8,50,7,60],kur:['Pierś z kurczaka',110,23,0,1.5],ind:['Pierś z indyka',105,23,0,1],mie:['Mielony indyk',150,20,0,8],wol:['Chuda wołowina',135,21,0,5],los:['Łosoś',208,20,0,13],dor:['Dorsz',80,18,0,0.7],tun:['Tuńczyk w wodzie',110,25,0,1],kre:['Krewetki',85,18,1,1],jaj:['Jajka',143,12.6,0.7,9.5,55],sky:['Skyr',63,11,4,0.2],twa:['Chudy twaróg',100,18,3.5,0.5],jog:['Jogurt grecki',97,9,4,5],mle:['Mleko 2%',50,3.4,4.8,2],wie:['Serek wiejski',100,12,3,4],zol:['Ser żółty',350,25,1,28],moz:['Mozzarella light',170,19,1,10],fet:['Feta',265,14,4,21],oli:['Oliwa z oliwek',884,0,0,100],mas:['Masło orzechowe',600,25,15,50],orz:['Orzechy włoskie',650,15,14,65],mig:['Migdały',580,21,22,50],chi:['Nasiona chia',486,17,42,31],mio:['Miód',304,0.3,82,0],rod:['Rodzynki',300,3,79,0.5],ban:['Banan',89,1.1,23,0.3,120],jab:['Jabłko',52,0.3,14,0.2,150],jag:['Owoce jagodowe',45,0.7,10,0.3],awo:['Awokado',160,2,9,15,150],bro:['Brokuł',34,2.8,7,0.4],szp:['Szpinak',23,2.9,3.6,0.4],pom:['Pomidory',18,0.9,3.9,0.2],ogo:['Ogórek',15,0.7,3.6,0.1],pap:['Papryka',31,1,6,0.3],cuk:['Cukinia',17,1.2,3,0.3],mar:['Marchew',41,0.9,10,0.2],war:['Warzywa mieszane',40,2.5,7,0.5],fas:['Czerwona fasola z puszki',90,6,15,0.5],cie:['Ciecierzyca z puszki',120,7,18,3],soc:['Soczewica czerwona (sucha)',340,25,55,1.5],pas:['Passata pomidorowa',35,1.6,6.5,0.2],kuk:['Kukurydza z puszki',85,3,16,1.5],hum:['Hummus',230,8,14,17],whe:['Odżywka białkowa',385,78,7,6],tof:['Tofu',76,8,2,4.5]};
+var R1='Owsianka z jagodami i skyrem|ow40,sky150,jag80;Omlet z warzywami|jaj165,pap60,pom60,szp30,oli5;Jajecznica ze szpinakiem na chlebie|jaj165,szp60,oli5,chl40;Naleśniki owsiane z twarogiem|ow50,jaj55,twa120,jab75;Skyr z owocami i chia|sky200,jag100,chi10,ban60;Tosty z awokado i jajkiem|chl60,awo75,jaj55;Serek wiejski z pomidorami|wie200,pom150,chl40;Shake proteinowy z bananem|whe30,ban120,mle250;Kurczak z ryżem i brokułem|kur150,ry50,bro150,oli5;Indyk z kaszą i warzywami|ind150,kas50,war150;Kurczak curry z cukinią|kur150,cuk150,pas100,ry40,oli5;Sałatka z kurczakiem i fetą|kur120,fet30,pom100,ogo100,szp40,oli8;Sałatka z tuńczykiem i jajkiem|tun120,jaj55,ogo100,pom100,oli8;Zupa pomidorowa z indykiem|pas250,ind100,ry30,mar80;Chili con carne light|mie100,fas120,pas150,pap80;Dorsz z batatem i szpinakiem|dor180,bat200,szp100,oli8;Łosoś z brokułem i ziemniakami|los120,bro200,zi150;Krewetki z cukinią i makaronem|kre150,cuk200,mak50,oli8;Tofu z warzywami i ryżem|tof150,war200,ry40,oli8;Leczo z indykiem i kaszą|ind150,pap150,cuk100,pas100,kas30;Gulasz wołowy z warzywami|wol150,mar100,pas100,zi150,oli5;Burrito bowl z kurczakiem|kur130,ry40,fas80,kuk50,pom80;Zapiekanka z cukinii z mozzarellą|cuk300,moz60,mie80,pas100;Wrap z kurczakiem i warzywami|tor60,kur100,ogo60,pom60,jog30;Makaron z indykiem i szpinakiem|mak60,mie100,szp80,pas100;Pasta z ciecierzycy z warzywami|cie150,hum30,pap100,ogo100,chl40;Sałatka z ciecierzycą i fetą|cie130,fet30,ogo100,pom100,oli5;Zupa krem z brokułu|bro300,zi100,jog50,fet20;Zupa z soczewicy|soc50,mar100,zi100,pas100,oli5;Kurczak teriyaki z ryżem|kur150,ry50,war150,mio10;Pieczony kurczak z batatami|kur150,bat200,bro100,oli5;Dorsz z kuskusem i cukinią|dor170,kus50,cuk100;Kotlety z indyka z kaszą|mie120,ow20,jaj30,kas40,ogo100;Szakszuka|jaj110,pas200,pap80,fet20,chl40;Frittata z cukinią|jaj165,cuk150,moz40,pom50;Twarożek z ogórkiem i chlebem|twa200,ogo80,chl60;Placki z cukinii|cuk200,jaj55,ow30,jog50;Kanapki z tuńczykiem|chl80,tun80,ogo80,jog30;Sałatka z krewetkami i awokado|kre120,awo75,ogo100,pom100,oli5;Owsianka z jabłkiem i mlekiem|ow50,mle200,jab150;Jogurt z orzechami i jabłkiem|jog200,orz15,jab150;Przekąska: hummus z warzywami|hum50,mar100,pap100,ogo100;Przekąska: serek wiejski z owocami|wie150,jag100;Przekąska: jajka z warzywami|jaj110,pap100,ogo100;Przekąska: smoothie ze szpinakiem|szp50,ban120,jog100,mle100;Przekąska: skyr z masłem orzechowym|sky200,mas10;Kasza gryczana z kurczakiem i brokułem|kas50,kur130,bro150;Ryż z tuńczykiem i kukurydzą|ry50,tun100,kuk60,pap80;Pizza na tortilli z kurczakiem|tor60,pas50,moz50,kur80;Zupa jarzynowa z fasolą|war250,fas100,zi100,oli5';
+var R2='Owsianka z masłem orzechowym i bananem|ow100,mle300,ban120,mas20;Owsianka z orzechami i rodzynkami|ow90,mle300,orz25,rod30,mio15;Naleśniki bananowe|ow80,jaj110,ban120,mas15,mle100;Jajecznica z 4 jajek na toscie|jaj220,chl100,zol30,oli5;Omlet z kurczakiem i serem|jaj165,kur80,zol40,pap60,chl80;Koktajl na masę|mle400,ban120,ow50,whe30,mas20;Shake gainer|mle400,ban120,ow70,whe40,mio20;Kanapki z jajkiem i awokado|chl120,awo100,jaj165,zol20;Granola z jogurtem greckim|ow80,jog250,mig30,mio20,jab100;Skyr z owsianką i masłem orzechowym|sky250,ow60,mas25,ban120;Makaron z kurczakiem w sosie pomidorowym|mak110,kur150,pas150,oli10,zol20;Makaron bolognese z indykiem|mak110,mie150,pas150,oli10,zol20;Spaghetti z wołowiną|mak110,wol150,pas150,oli10;Ryż z kurczakiem i warzywami|ry100,kur180,war150,oli10;Kurczak curry z ryżem|ry100,kur180,pas100,jog50,oli10;Burrito z kurczakiem|tor120,kur150,ry50,fas60,zol30,pom50;Burrito z wołowiną|tor120,wol130,ry50,fas60,zol30;Kebab z kurczakiem w tortilli|tor120,kur170,jog60,hum30,pom60,ogo60;Łosoś z ziemniakami i warzywami|los160,zi350,war150,oli10;Dorsz z ryżem i warzywami|dor200,ry100,war150,oli15;Krewetki z makaronem|kre200,mak110,pas100,oli15;Wołowina z batatami i brokułem|wol180,bat350,bro150,oli10;Kasza z mielonym indykiem|kas100,mie180,war150,oli10;Kotlety z indyka z ziemniakami|mie200,jaj55,ow30,zi350,oli10,ogo100;Gulasz wołowy z kaszą|wol200,kas90,mar100,pas100,oli10;Chili con carne z ryżem|mie150,fas150,pas200,ry80,zol30;Leczo z kurczakiem i kaszą|kur180,pap150,cuk100,pas100,kas80,oli10;Zapiekanka makaronowa z mozzarellą|mak110,mie150,moz80,pas150;Lasagne uproszczone|mak100,mie150,pas150,moz80,jog60;Pizza na tortilli z mięsem i serem|tor120,pas60,moz80,kur120,pap50,oli5;Wrap z tuńczykiem i serem|tor120,tun120,zol30,hum40,pom60;Ryż z jajkiem i tofu|ry100,jaj110,tof120,war150,oli10;Kuskus z kurczakiem i hummusem|kus100,kur180,hum50,ogo100,oli10;Makaron z tuńczykiem i fetą|mak110,tun120,pom150,oli15,fet30;Ziemniaki z jajkiem i twarogiem|zi400,jaj110,twa150,oli10;Placki ziemniaczane z jogurtem|zi400,jaj55,ow40,jog100,oli15;Bataty zapiekane z kurczakiem i serem|bat400,kur180,moz60,oli10;Zupa gulaszowa z wołowiną|wol150,zi250,pap100,pas100,chl80;Zupa krem z batatów z kurczakiem|bat300,kur120,jog60,chl80,oli10;Tosty francuskie z bananem|chl150,jaj165,mle100,mio20,ban120;Bowl z kurczakiem, ryżem i awokado|ry90,kur150,awo100,kuk60,fas60;Bowl z łososiem i kuskusem|kus90,los130,awo75,ogo100,oli5;Bowl z wołowiną i batatami|bat300,wol150,awo75,pap100,oli10;Bowl z tofu i orzechami|ry90,tof180,orz20,war150,mas15;Owsianka białkowa z orzechami|ow90,mle300,whe30,jab150,orz15;Przekąska: kanapki z masłem orzechowym i bananem|chl100,mas30,ban120;Przekąska: jogurt z granolą i orzechami|jog250,ow60,orz30,mio15;Przekąska: shake z masłem orzechowym|mle400,ban120,mas30,whe30;Przekąska: hummus z kurczakiem i chlebem|hum80,kur120,chl100;Przekąska: twaróg z orzechami i miodem|twa250,orz30,mio20,jab150';
+function gen(s){return s.split(';').map(function(r){var a=r.split('|'),k=0,p=0,c=0,f=0,t=[];a[1].split(',').forEach(function(z){var m=z.match(/^([a-z]+)(\d+)$/),d=ING[m[1]],g=+m[2],x=g/100;k+=d[1]*x;p+=d[2]*x;c+=d[3]*x;f+=d[4]*x;t.push(g+' g '+d[0].toLowerCase()+(d[5]?' (≈'+String(Math.round(g/d[5]*2)/2).replace('.',',')+' szt.)':''))});return{n:a[0],k:Math.round(k),p:Math.round(p),c:Math.round(c),f:Math.round(f),i:t.join(', '),s:howto(a[0],a[1])}})}
+var PR={ow:'ugotuj w mleku lub wodzie 5 min',ry:'ugotuj 12–15 min',mak:'ugotuj al dente 8–10 min',kas:'ugotuj 15 min',kus:'zalej wrzątkiem i przykryj na 5 min',zi:'ugotuj 15–20 min',bat:'upiecz w 200°C przez 25 min',tor:'podgrzej na suchej patelni',kur:'przypraw i smaż 6–8 min z każdej strony',ind:'przypraw i smaż 6–8 min z każdej strony',mie:'zrumień na patelni 6–8 min',wol:'pokrój i smaż 5–7 min',los:'piecz w 200°C przez 12–15 min',dor:'piecz w 200°C przez 12 min',kre:'smaż 3–4 min',tof:'pokrój w kostkę i podsmaż 5 min',jaj:'roztrzep i usmaż 3–4 min albo ugotuj na twardo',tun:'odcedź',fas:'odcedź',cie:'odcedź',kuk:'odcedź',soc:'ugotuj 15 min'},VC={bro:1,cuk:1,pap:1,mar:1,war:1},VF={pom:1,ogo:1,szp:1,jab:1,ban:1,jag:1,awo:1};
+function howto(n,spec){
+  if(/^(Shake|Koktajl|Smoothie|Przekąska: (smoothie|shake))/i.test(n))return '1. Wszystkie składniki zmiksuj na gładko.\n2. Przelej do szklanki i wypij od razu.';
+  if(/^(Zupa|Gulasz|Chili|Leczo)|curry/i.test(n))return '1. Pokrój mięso, tofu i warzywa w kostkę.\n2. Zrumień mięso lub tofu w garnku na łyżce oleju przez 5 min.\n3. Dodaj pozostałe składniki i 400 ml wody lub bulionu.\n4. Gotuj pod przykryciem 20–25 min, dopraw solą, pieprzem i ziołami.';
+  var st=[],vc=[],vf=[],seen={},pl=/^Placki/.test(n);
+  var sp=/^Naleśniki/.test(n)?'Zblenduj płatki z jajkami i dodatkami na ciasto, smaż małe placki 2–3 min z każdej strony.':pl?'Warzywa zetrzyj, wymieszaj z jajkami i płatkami, smaż placki 3 min z każdej strony.':/^(Kotlety|Burger)/.test(n)?'Mięso wymieszaj z jajkiem i płatkami owsianymi, dopraw i uformuj kotlety; smaż po 5–6 min z każdej strony.':'';
+  if(sp)st.push(sp);
+  spec.split(',').forEach(function(z){var c=z.match(/^[a-z]+/)[0],nm=ING[c][0];if(seen[c])return;seen[c]=1;
+    if(sp&&(c==='ow'||c==='jaj'||c==='mie'||(pl&&(c==='zi'||VC[c]))))return;
+    if(PR[c])st.push(nm+': '+PR[c]+'.');else if(VC[c])vc.push(nm.toLowerCase());else if(VF[c])vf.push(nm.toLowerCase())});
+  if(vc.length)st.push('Warzywa ('+vc.join(', ')+'): pokrój i podsmaż lub ugotuj 5–7 min.');
+  if(vf.length)st.push('Pokrój na świeżo: '+vf.join(', ')+'.');
+  st.push(/bowl|^Sałatka/i.test(n)?'Złóż w misce, polej oliwą lub jogurtem i dopraw solą oraz pieprzem.':/^(Wrap|Burrito|Kebab|Tortilla)/.test(n)?'Całość zawiń w tortillę, możesz opiec ją 2 min na patelni.':/^(Kanapki|Tosty|Przekąska: kanapk)/.test(n)?'Ułóż składniki na pieczywie i podawaj.':/^Pizza/.test(n)?'Posmaruj tortillę sosem, obłóż, posyp serem i piecz w 220°C przez 8–10 min.':/^(Zapiekanka|Lasagne)/.test(n)?'Przełóż do formy, posyp serem i zapiekaj w 200°C przez 20 min.':'Połącz składniki, dopraw do smaku i podawaj.');
+  return st.map(function(x,i){return (i+1)+'. '+x}).join('\n');
+}
+var R4='Owsianka z cynamonem i skyrem|ow40,sky150,jab100;Omlet z papryką i mozzarellą|jaj110,pap80,moz30,szp30;Naleśniki z twarogiem i jagodami|ow40,jaj55,twa100,jag80;Jajka sadzone na chlebie z awokado|jaj110,chl50,awo50;Kanapki z serkiem wiejskim|chl80,wie100,ogo80,pom80;Smoothie z jagodami i skyrem|jag100,sky150,mle150,ban60;Kurczak z kuskusem i warzywami|kur150,kus50,war150,oli5;Indyk z kaszą i szpinakiem|ind150,kas50,szp100;Sałatka z kurczakiem i awokado|kur120,awo75,pom100,ogo100,szp40,oli5;Sałatka z krewetkami i ciecierzycą|kre120,cie80,ogo100,pom100,oli8;Dorsz z ziemniakami i brokułem|dor170,zi200,bro150,oli5;Łosoś z ryżem i szpinakiem|los110,ry40,szp100;Zapiekany kurczak z cukinią i mozzarellą|kur140,cuk200,moz40,pas80;Makaron z krewetkami i szpinakiem|mak50,kre120,szp80,pas80,oli5;Tofu curry z warzywami|tof150,war200,pas100,ry30,oli5;Kotlety z indyka z surówką|mie120,jaj30,ow20,mar100,ogo100,oli5;Zupa z ciecierzycy i warzyw|cie120,war200,pas100,oli5;Zupa krem z cukinii|cuk400,zi100,jog50,fet20;Chili z indykiem i fasolą|mie100,fas100,pas200,pap80,kuk40;Gulasz z indyka z warzywami|ind150,mar100,pap100,pas100,zi100;Wrap z jajkiem i warzywami|tor60,jaj110,ogo80,pom60,jog20;Tosty z tuńczykiem i ogórkiem|chl80,tun100,ogo80,jog30;Bowl z ciecierzycą i hummusem|cie120,hum30,ogo100,pom100,pap80,ry20;Przekąska: jogurt z jagodami|jog150,jag100;Przekąska: twaróg z ogórkiem|twa150,ogo100,pom50';
+var R5='Owsianka z jogurtem, bananem i orzechami|ow90,jog150,mle200,ban120,orz20;Naleśniki z twarogiem i miodem|ow80,jaj110,twa150,mio20,ban120;Omlet z 4 jajek z serem i chlebem|jaj220,zol40,pap60,chl100,oli5;Kanapki z masłem orzechowym i bananem|chl150,mas40,ban120;Smoothie bowl z granolą|jog200,ban120,ow60,mig20,jag100,mio15;Shake po treningu z owsianką|mle400,ow60,ban120,whe35,mas15;Kurczak z ryżem i sosem pomidorowym|kur200,ry100,pas150,oli10,zol20;Makaron z łososiem i szpinakiem|mak110,los130,szp100,pas100,oli10;Wołowina z ryżem i warzywami|wol180,ry100,war150,oli10;Kotlety z indyka z kaszą i surówką|mie180,jaj55,ow30,kas80,mar80,oli5;Burrito bowl z wołowiną|wol150,ry100,fas80,kuk50,awo75,zol30;Kebab z kurczaka z hummusem|tor120,kur180,hum50,jog60,pom60,ogo60;Pizza na tortilli z wołowiną i serem|tor120,pas60,moz80,wol100,pap60,oli5;Curry z kurczaka z ryżem|kur180,ry100,pas150,jog60,oli15;Gulasz wołowy z ziemniakami|wol200,zi350,mar100,pas100,oli10;Chili z wołowiną i ryżem|wol150,fas120,pas200,ry80,zol30,pap60;Zupa gulaszowa z chlebem|wol150,zi250,pap100,pas100,chl100;Zapiekanka z batatów i wołowiny|bat400,wol150,moz70,oli5;Lasagne z indykiem|mak110,mie150,pas150,moz70,jog60;Ryż z tuńczykiem i jajkiem|ry100,tun120,jaj110,kuk60,oli10;Dorsz z ziemniakami i fasolką|dor220,zi400,war150,oli20;Łosoś z kuskusem i awokado|los150,kus90,awo75,ogo100,oli5;Makaron z mielonym indykiem i serem|mak120,mie150,pas150,zol30,oli10;Przekąska: kanapki z jajkiem i serem|chl120,jaj110,zol30;Przekąska: shake bananowo-orzechowy|mle400,ban120,mas30,ow30';
+var R6='Owsianka z jabłkiem i orzechami|ow60,mle250,jab150,orz10;Jajecznica z awokado i chlebem|jaj165,awo50,chl70;Naleśniki owsiane z jagodami|ow60,jaj55,jog80,jag80;Kanapki z indykiem i hummusem|chl100,ind80,hum30,ogo80,pom80;Skyr z granolą i bananem|sky200,ow40,ban120,mig10;Shake białkowy z owsianką|mle300,ow40,ban100,whe25;Kurczak z ryżem i szpinakiem|kur150,ry70,szp100,oli8;Indyk z batatami i fasolką|ind150,bat250,war120,oli5;Makaron z kurczakiem i brokułem|mak80,kur120,bro150,oli8,zol15;Łosoś z kaszą i warzywami|los110,kas60,war150;Dorsz z kuskusem i papryką|dor180,kus70,pap150,oli8;Krewetki z ryżem i warzywami|kre150,ry70,war150,oli8;Wołowina z ziemniakami i brokułem|wol140,zi250,bro150,oli5;Burger z indyka z surówką|mie150,jaj30,ow20,chl60,ogo80,pom60;Zapiekanka z cukinii i indyka|cuk250,mie130,moz50,pas100,ry30;Leczo z kurczakiem|kur150,pap150,cuk150,pas100,ry40,oli8;Zupa pomidorowa z kaszą i kurczakiem|pas300,kur100,kas40,mar80,chl40;Zupa z fasolą i warzywami|fas120,war200,zi100,pas100,chl40,oli5;Sałatka z łososiem i ziemniakami|los100,zi150,ogo100,pom100,szp40,oli8;Sałatka z kurczakiem i makaronem|kur120,mak50,pom100,ogo100,fet25,oli8;Wrap z indykiem i awokado|tor60,ind100,awo50,pom60,ogo60,jog30;Tortilla z jajkiem i fasolą|tor60,jaj110,fas60,zol20,pom60;Bowl z tuńczykiem, ryżem i awokado|ry60,tun100,awo60,kuk40,ogo80;Przekąska: jogurt z granolą|jog200,ow30,jab100,mio10;Przekąska: twaróg z owocami|twa200,jag100,ban60,orz10';
+var PL='Upper/Lower 4 dni=Góra A:Wyciskanie sztangi leżąc@4×6–8,Wiosłowanie sztangą@4×8,Wyciskanie nad głowę@3×8,Podciąganie nachwytem@3×6–10,Uginanie ramion ze sztangą@2×10,Prostowanie ramion z liną@2×12;Dół A:Przysiad ze sztangą@4×6–8,Martwy ciąg rumuński@3×8,Wypychanie na suwnicy@3×10,Uginanie nóg leżąc@3×12,Wspięcia na palce stojąc@4×12;Góra B:Wyciskanie sztangi na skosie@4×8,Ściąganie drążka wyciągu górnego@4×10,Wyciskanie hantli siedząc@3×10,Wiosłowanie na wyciągu siedząc@3×10,Unoszenie hantli bokiem@3×15,Uginanie młotkowe@2×12;Dół B:Martwy ciąg@3×5,Przysiad bułgarski@3×8,Hip thrust@3×10,Prostowanie nóg na maszynie@3×12,Plank@3×45 s#FBW dla początkujących=Dzień A:Przysiad goblet@3×10,Wyciskanie hantli leżąc@3×10,Ściąganie drążka wyciągu górnego@3×10,Wyciskanie hantli siedząc@2×10,Plank@3×30 s;Dzień B:Wypychanie na suwnicy@3×12,Pompki@3×8–12,Wiosłowanie na wyciągu siedząc@3×10,Martwy ciąg rumuński@3×10,Unoszenie kolan w zwisie@2×10;Dzień C:Przysiad ze sztangą@3×8,Wyciskanie na maszynie@3×10,Wiosłowanie hantlą jedno-rącz@3×10,Hip thrust@3×12,Rowerek@3×15#Split 5 dni=Klatka:Wyciskanie sztangi leżąc@4×6–8,Wyciskanie hantli na skosie@3×10,Rozpiętki na maszynie butterfly@3×12,Krzyżowanie linek wyciągu@3×15,Dipy na poręczach@3×10;Plecy:Martwy ciąg@3×5,Podciąganie nachwytem@4×6–10,Wiosłowanie sztangą@3×8,Ściąganie wąskim uchwytem@3×10,Face pull@3×15;Nogi:Przysiad ze sztangą@4×6–8,Wypychanie na suwnicy@3×10,Martwy ciąg rumuński@3×8,Uginanie nóg siedząc@3×12,Wspięcia na palce stojąc@4×12;Barki:Wyciskanie nad głowę@4×8,Unoszenie hantli bokiem@4×15,Unoszenie hantli w opadzie@3×15,Szrugsy z hantlami@3×12,Odwrotne rozpiętki na maszynie@3×15;Ręce:Uginanie ramion ze sztangą łamaną@3×10,Uginanie młotkowe@3×12,Wyciskanie francuskie@3×10,Prostowanie ramion z liną@3×12,Uginanie na modlitewniku@2×12#Trening w domu=Dzień A:Pompki@4×10–15,Przysiad goblet@4×12,Wykroki z hantlami@3×10,Plank@3×45 s,Dead bug@3×10;Dzień B:Pompki diamentowe@3×10,Wiosłowanie hantlą jedno-rącz@4×10,Hip thrust@4×12,Unoszenie hantli bokiem@3×15,Rowerek@3×20;Dzień C:Przysiad bułgarski@3×10,Dipy na ławce@3×12,Uginanie ramion z hantlami@3×12,Wspinaczka@3×30 s,Burpees@3×10#Redukcja: siła + cardio=Siła A:Przysiad ze sztangą@3×8,Wyciskanie sztangi leżąc@3×8,Wiosłowanie sztangą@3×10,Plank@3×45 s;Siła B:Martwy ciąg rumuński@3×8,Wyciskanie nad głowę@3×8,Podciąganie nachwytem@3×8,Wykroki chodzone@3×12;Cardio:Marsz pod górę na bieżni@1×30 min,Interwały na rowerze@8×30 s,Wioślarz@1×10 min#Minimum 2 dni=Dzień 1:Przysiad ze sztangą@3×8,Wyciskanie sztangi leżąc@3×8,Wiosłowanie sztangą@3×10,Wyciskanie nad głowę@2×10,Plank@2×45 s;Dzień 2:Martwy ciąg@3×5,Wyciskanie hantli na skosie@3×10,Podciąganie nachwytem@3×6–10,Wypychanie na suwnicy@3×10,Unoszenie nóg w zwisie@2×10';
+PL.split('#').forEach(function(p){var a=p.split('='),d=[];a[1].split(';').forEach(function(day){var b=day.split(':');d.push([b[0],b[1].split(',').map(function(x){var y=x.split('@');return [y[0],y[1]]})])});PLANS[a[0]]=d});
+REC['Redukcja']=REC['Redukcja'].concat(gen(R1));
+REC['Masa']=REC['Masa'].concat(gen(R2));
+function srchR(el){rq=el.value;rMax=30;render();var q=document.getElementById('rq');q.focus();q.setSelectionRange(q.value.length,q.value.length)}
+function srchE(el){eq=el.value;exMax=40;render();var q=document.getElementById('eq');q.focus();q.setSelectionRange(q.value.length,q.value.length)}
+
+var EXL={'Klatka':'Wyciskanie sztangi leżąc,Wyciskanie sztangi na skosie,Wyciskanie sztangi na skosie ujemnym,Wyciskanie hantli leżąc,Wyciskanie hantli na skosie,Rozpiętki z hantlami,Rozpiętki na maszynie butterfly,Krzyżowanie linek wyciągu,Pompki,Pompki na podwyższeniu,Pompki diamentowe,Dipy na poręczach,Wyciskanie na maszynie,Pullover z hantlą','Plecy':'Martwy ciąg,Podciąganie nachwytem,Podciąganie podchwytem,Ściąganie drążka wyciągu górnego,Ściąganie wąskim uchwytem,Wiosłowanie sztangą,Wiosłowanie hantlą jedno-rącz,Wiosłowanie na wyciągu siedząc,Wiosłowanie T-bar,Wiosłowanie na maszynie,Face pull,Szrugsy ze sztangą,Hiperekstensje,Pullover na wyciągu,Good morning','Nogi':'Przysiad ze sztangą,Przysiad przedni,Przysiad bułgarski,Przysiad goblet,Przysiad hack,Wypychanie na suwnicy,Martwy ciąg rumuński,Martwy ciąg sumo,Wykroki z hantlami,Wykroki chodzone,Wejścia na podwyższenie,Prostowanie nóg na maszynie,Uginanie nóg leżąc,Uginanie nóg siedząc,Hip thrust,Wspięcia na palce stojąc,Wspięcia na palce siedząc,Odwodzenie nogi na wyciągu','Barki':'Wyciskanie nad głowę,Wyciskanie żołnierskie,Wyciskanie hantli siedząc,Wyciskanie Arnolda,Wyciskanie na maszynie barkowej,Unoszenie hantli bokiem,Unoszenie hantli w przód,Unoszenie hantli w opadzie,Unoszenie bokiem na wyciągu,Odwrotne rozpiętki na maszynie,Podciąganie sztangi wzdłuż tułowia,Szrugsy z hantlami','Biceps':'Uginanie ramion ze sztangą,Uginanie ramion ze sztangą łamaną,Uginanie ramion z hantlami,Uginanie młotkowe,Uginanie młotkowe z liną,Uginanie na modlitewniku,Uginanie skoncentrowane,Uginanie na wyciągu dolnym,Uginanie z hantlami na skosie,Uginanie Zottmana','Triceps':'Wyciskanie francuskie,Wyciskanie francuskie z hantlą,Wyciskanie wąskim chwytem,Prostowanie ramion na wyciągu,Prostowanie ramion z liną,Prostowanie ramion znad głowy,Prostowanie ramienia w opadzie,Prostowanie ramienia jednorącz na wyciągu,Dipy na ławce','Brzuch i core':'Plank,Plank boczny,Unoszenie nóg w zwisie,Unoszenie kolan w zwisie,Wznosy nóg leżąc,Spięcia brzucha,Allahy na wyciągu,Rosyjski skręt,Wspinaczka,Dead bug,Bird dog,Rowerek,Ab wheel,Skłony boczne z hantlą','Cardio i całe ciało':'Bieżnia,Marsz pod górę na bieżni,Rowerek stacjonarny,Interwały na rowerze,Orbitrek,Wioślarz,Skakanka,Burpees,Kettlebell swing,Thruster,Spacer farmera,Skoki na skrzynię'};
+function exLib(){
+  var h='<h2>Biblioteka ćwiczeń ('+exCount()+')</h2><input id="eq" type="search" placeholder="Szukaj ćwiczenia" value="'+esc(eq)+'" oninput="srchE(this)">';
+  if(!eq)h+='<div class="chips wrap">'+Object.keys(EXL).map(function(k){return '<button aria-pressed="'+(k===exg)+'" data-k="'+k+'" onclick="exg=this.dataset.k;exMax=40;render()">'+k+'</button>'}).join('')+'</div>';
+  var l=[];
+  Object.keys(EXL).forEach(function(k){if(eq||k===exg)EXL[k].split(',').forEach(function(n){if(!eq||n.toLowerCase().indexOf(eq.toLowerCase())>-1)l.push(n)})});
+  h+='<div class="card">'+(l.length?l.slice(0,exMax).map(function(n){return '<button class="exb" data-e="'+esc(n)+'" onclick="useEx(this.dataset.e)">'+esc(n)+'</button>'}).join(''):'<p class="empty">Nic nie znaleziono.</p>')+(l.length>exMax?'<button class="go" style="width:100%;margin-top:10px" onclick="exMax+=40;render()">Pokaż więcej ('+(l.length-exMax)+')</button>':'')+'</div><p class="hint">Dotknij ćwiczenia, żeby wpisać je do formularza serii na górze.</p>';
+  return h;
+}
+
+var R3='Owsianka z bananem i orzechami|ow60,mle250,ban120,orz10;Jajecznica z pomidorem na chlebie|jaj165,pom100,chl70,oli5;Omlet z serem i szpinakiem|jaj165,zol25,szp50,chl60;Jogurt z granolą i owocami|jog200,ow40,jag80,mio10;Skyr z owsianką i jabłkiem|sky200,ow40,jab150,orz10;Kanapki z twarogiem i warzywami|chl100,twa150,ogo80,pom80;Tosty z awokado i jajkiem|chl90,awo100,jaj110;Naleśniki owsiane z jogurtem i bananem|ow60,jaj55,jog100,ban120;Shake z bananem i masłem orzechowym|mle300,ban120,mas15,whe20;Kurczak z ryżem i warzywami|kur150,ry70,war150,oli8;Kurczak z kaszą gryczaną i surówką|kur150,kas60,mar100,ogo100,oli8;Indyk z batatami i brokułem|ind150,bat250,bro150,oli5;Makaron z kurczakiem i szpinakiem|mak80,kur130,szp80,pas100,oli8;Makaron z tuńczykiem i pomidorami|mak80,tun100,pom150,oli8,fet20;Spaghetti z indykiem|mak80,mie120,pas150,oli5;Łosoś z ziemniakami i fasolką|los130,zi250,war120,oli5;Dorsz z ryżem i warzywami|dor180,ry70,war150,oli8;Krewetki z makaronem i cukinią|kre150,mak70,cuk150,oli8;Wołowina z kuskusem i papryką|wol140,kus70,pap150,oli5;Gulasz wołowy z kaszą|wol150,kas60,mar100,pas100,oli5;Chili con carne|mie130,fas120,pas150,ry50,pap60;Leczo z indykiem i ryżem|ind130,pap150,cuk100,pas100,ry50,oli8;Burrito z kurczakiem|tor60,kur120,ry40,fas50,zol20,pom50;Wrap z tuńczykiem i serem|tor60,tun100,hum30,ogo80,pom60,zol20;Wrap z kurczakiem i hummusem|tor60,kur120,hum40,ogo80,pom60,jog20;Kebab z indyka w tortilli|tor60,ind130,jog50,pom60,ogo60,hum20;Zapiekanka z batatów z kurczakiem|bat300,kur130,moz50,oli5;Zapiekanka makaronowa z indykiem|mak70,mie120,moz50,pas120;Szakszuka z fetą i chlebem|jaj165,pas200,pap80,fet30,chl60;Frittata z warzywami i serem|jaj165,cuk150,moz40,pom60,chl50;Ziemniaki z jajkiem i twarogiem|zi300,jaj110,twa120,oli5;Placki ziemniaczane z jogurtem|zi250,jaj55,ow30,jog80,oli10;Zupa krem z batatów z kurczakiem|bat250,kur100,jog40,chl60,oli5;Zupa pomidorowa z ryżem i indykiem|pas300,ind100,ry40,mar80,jog30;Zupa z soczewicy z chlebem|soc60,mar100,zi100,pas100,chl50,oli5;Zupa gulaszowa|wol100,zi200,pap100,pas100,chl40;Sałatka z kurczakiem, fetą i chlebem|kur130,fet30,pom100,ogo100,szp40,chl60,oli8;Sałatka z tuńczykiem i fasolą|tun120,fas100,jaj55,ogo100,pom100,oli10,chl40;Sałatka z ciecierzycą i fetą|cie150,fet40,ogo100,pom100,oli10,chl50;Bowl z kurczakiem i ryżem|ry60,kur130,awo75,kuk50,war100;Bowl z łososiem i kuskusem|kus60,los110,ogo100,awo50,oli5;Bowl z wołowiną i batatami|bat200,wol120,pap100,awo50;Bowl z tofu i ryżem|ry60,tof150,war150,mas10;Pizza na tortilli z kurczakiem|tor60,pas50,moz60,kur90,pap50;Kanapki z jajkiem i awokado|chl100,awo75,jaj110;Twaróg z owocami i orzechami|twa200,jag100,orz15,mio10;Przekąska: jogurt z orzechami i miodem|jog200,orz15,mio10;Przekąska: hummus z warzywami i chlebem|hum60,chl50,mar100,pap100;Przekąska: kanapka z masłem orzechowym i bananem|chl70,mas20,ban120;Przekąska: skyr z owocami i chia|sky200,jag100,chi10,ban60,orz10';
+REC['Utrzymanie']=gen(R3);
+REC['Redukcja']=REC['Redukcja'].concat(gen(R4));REC['Masa']=REC['Masa'].concat(gen(R5));REC['Utrzymanie']=REC['Utrzymanie'].concat(gen(R6));
+
+var MT=[['sn','Śniadanie'],['ds','II śniadanie'],['ob','Obiad'],['ko','Kolacja'],['pr','Przekąska'],['','Inne']],rmt='';
+function defMt(){var hr=new Date().getHours();return hr<10?'sn':hr<12?'ds':hr<16?'ob':hr<18?'pr':'ko'}
+var mt=defMt();
+function mealOpts(){return MT.slice(0,5).map(function(t){return o(t[0],t[1],mt)}).join('')}
+function rmOpts(){return o('','Automatycznie',rmt)+MT.slice(0,5).map(function(t){return o(t[0],t[1],rmt)}).join('')}
+function guessMt(n){return /^Przekąska/.test(n)?'pr':/^(Owsianka|Omlet|Jajecznica|Naleśniki|Jogurt|Skyr|Shake|Koktajl|Tosty|Granola|Serek|Twarożek|Twaróg|Kanapki|Smoothie)/.test(n)?'sn':'ob'}
+function setMt(k){mt=k;render();var f=document.getElementById('mf');if(f)f.scrollIntoView({block:'center'})}
+function mealSections(m){
+  var h='';
+  MT.forEach(function(t){
+    var l=m.filter(function(x){return (x.t||'')===t[0]});
+    if(!t[0]&&!l.length)return;
+    h+='<div class="card"><div class="mh"><b>'+t[1]+'</b><span>'+(l.length?Math.round(sum(l,'k'))+' kcal':'')+'</span>'+(t[0]?'<button class="mini" data-t="'+t[0]+'" onclick="setMt(this.dataset.t)">+ Dodaj</button>':'')+'</div>';
+    l.forEach(function(x){h+='<div class="item"><div><p>'+esc(x.n)+'</p><p class="sub">'+Math.round(x.k)+' kcal · B '+Math.round(x.p)+' · W '+Math.round(x.c)+' · T '+Math.round(x.f)+'</p></div><button class="del" onclick="delMeal('+x.id+')" aria-label="Usuń posiłek">×</button></div>'});
+    h+='</div>';
+  });
+  return h;
+}
+
+var SG={red:[8000,12000,10000,'Redukcja'],utr:[7000,10000,8000,'Utrzymanie'],masa:[5000,8000,6000,'Zwiększanie masy']};
+function fmtN(n){return Math.round(n).toLocaleString('pl-PL')}
+function stDay(d){return (S.steps&&S.steps[d])||0}
+function stG(){return (S.bio&&S.bio.g)||'utr'}
+function stGoal(){return S.stg&&S.stg.v>0?S.stg.v:SG[stG()][2]}
+function steps(){
+  var g=stG(),R=SG[g],goal=stGoal(),n=stDay(cur),b=S.bio||{},w=b.w||70,stride=b.h?b.h*0.415/100:0.7,km=n*stride/1000,kc=n*0.0005*w;
+  var h='<h2>Kroki</h2><div class="card" style="margin-top:0"><div class="hero"><div class="num" id="stn">'+fmtN(n)+'</div><div class="of">cel '+fmtN(goal)+' <span class="hint"><button onclick="goSt()">zmień</button></span><br>'+(n>=goal?'cel osiągnięty':'brakuje '+fmtN(goal-n))+'</div></div><div class="bar'+(n>=goal?' over':'')+'"><i style="width:'+Math.min(100,n/goal*100)+'%"></i></div>';
+  h+='<p class="hint" style="margin-top:10px">≈ '+(+km.toFixed(1)).toLocaleString('pl-PL')+' km · ok. '+Math.round(kc)+' kcal (orientacyjnie)</p>';
+  h+='<div class="chips wrap" style="margin-top:12px">'+[500,1000,2000,5000].map(function(x){return '<button data-n="'+x+'" onclick="addSt(+this.dataset.n)">+ '+fmtN(x)+'</button>'}).join('')+'<button data-n="-1000" onclick="addSt(+this.dataset.n)">− 1 000</button></div>';
+  h+='<form class="goals" style="margin-top:12px;grid-template-columns:1fr auto" onsubmit="setSt(event)"><label>Ustaw dokładną liczbę<input name="n" inputmode="numeric" placeholder="np. 8500"></label><button class="go" style="padding:0 16px">Zapisz</button></form>'+stExtra()+'</div>';
+  var wk=[];for(var i=0;i<7;i++){var d=new Date(TODAY+'T12:00');d.setDate(d.getDate()-i);wk.push(ymd(d))}
+  var vals=wk.map(stDay).filter(function(x){return x>0}),avg=vals.length?vals.reduce(function(s,x){return s+x},0)/vals.length:0,hit=wk.filter(function(x){return stDay(x)>=goal}).length;
+  h+='<div class="card stats"><div><b>'+(avg?fmtN(avg):'–')+'</b><span>średnio dziennie (7 dni)</span></div><div><b>'+hit+' / 7</b><span>dni z osiągniętym celem</span></div></div>';
+  var ks=Object.keys(S.steps||{}).filter(function(x){return S.steps[x]>0}).sort().slice(-14);
+  if(ks.length>1)h+='<div class="card">'+chart(ks.map(function(x){return{d:x,y:S.steps[x]}}))+'</div>';
+  h+='<div class="card"><b>Ile kroków dziennie?</b><p class="hint" style="margin:6px 0 4px">Twój cel w profilu: <b>'+R[3]+'</b>'+((S.bio&&S.bio.g)?'':' (ustawisz go w zakładce Profil)')+'.</p>';
+  ['red','utr','masa'].forEach(function(k){var x=SG[k];h+='<div class="item"><div><p>'+x[3]+(k===g?' · twój cel':'')+'</p><p class="sub">'+fmtN(x[0])+'–'+fmtN(x[1])+' kroków, cel '+fmtN(x[2])+'</p></div><button class="mini" data-n="'+x[2]+'" onclick="setGoalSt(+this.dataset.n)">Ustaw cel</button></div>'});
+  h+='<form id="stg" class="goals" style="margin-top:12px;grid-template-columns:1fr auto" onsubmit="setGoalForm(event)"><label>Własny cel kroków dziennie<input name="g" type="number" inputmode="numeric" min="1000" max="50000" step="100" required placeholder="np. 9000" value="'+goal+'"></label><button class="go" style="padding:0 16px">Zapisz cel</button></form>'+(S.stg?'<p class="hint" style="margin-top:6px"><button onclick="resetGoalSt()">Przywróć cel domyślny ('+fmtN(R[2])+')</button></p>':'');
+  h+='<p class="hint" style="margin-top:10px"><b>Redukcja:</b> 8–12 tys. Spacer zwiększa wydatek energetyczny bez dużego zmęczenia, więc łatwiej utrzymać deficyt i nie obciąża regeneracji po treningu. Zwiększaj kroki stopniowo, o ok. 1 000 tygodniowo.</p>';
+  h+='<p class="hint" style="margin-top:8px"><b>Utrzymanie:</b> 7–10 tys. W tym zakresie widać większość korzyści zdrowotnych i łatwo utrzymać stałą wagę. Pilnuj średniej z tygodnia, a nie pojedynczego dnia.</p>';
+  h+='<p class="hint" style="margin-top:8px"><b>Masa:</b> 5–8 tys. Wystarczy dla krążenia i regeneracji, a nie zjada nadwyżki kalorii. Jeśli waga nie rośnie, dołóż kalorie zamiast ograniczać ruch poniżej 5 tys.</p>';
+  h+='<p class="hint" style="margin-top:8px">Wynik wpisuj z krokomierza w telefonie (aplikacja Zdrowie lub Google Fit), np. wieczorem. To wskazówki ogólne; przy bólach stawów lub chorobach dobierz ruch z lekarzem.</p></div>';
+  return h;
+}
+function addSt(n){S.steps=S.steps||{};S.steps[cur]=Math.max(0,stDay(cur)+n);save();render()}
+function setSt(e){e.preventDefault();var v=e.target.n.value;if(v==='')return;S.steps=S.steps||{};S.steps[cur]=Math.max(0,Math.round(num(v)));save();render()}
+function setGoalSt(n){S.stg={v:n,g:stG()};save();render()}
+
+var rstA='',stOn=false,stLast=0,stF=9.81,stUp=false,stN=0,stGot=false,stMsg='',stWL=null;
+function rstArm(k){rstA=k;render();setTimeout(function(){if(rstA===k){rstA='';render()}},4000)}
+function rstDay(){if(rstA!=='d')return rstArm('d');S.steps=S.steps||{};delete S.steps[cur];rstA='';save();render()}
+function rstAll(){if(rstA!=='a')return rstArm('a');S.steps={};rstA='';save();render()}
+function stMotion(ev){
+  var a=ev.accelerationIncludingGravity;if(!a||a.x==null)return;stGot=true;
+  var m=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z),t=Date.now();stF=stF*0.6+m*0.4;var d=stF-9.81;
+  if(d>0.7&&!stUp&&t-stLast>320){stUp=true;stLast=t;S.steps=S.steps||{};S.steps[TODAY]=(S.steps[TODAY]||0)+1;stN++;if(stN%10===0)save();
+    if(cur===TODAY){var e=document.getElementById('stn');if(e)e.textContent=fmtN(S.steps[TODAY])}}
+  else if(d<0.15)stUp=false;
+}
+function stToggle(){
+  stMsg='';
+  if(stOn){window.removeEventListener('devicemotion',stMotion);stOn=false;save();if(stWL){try{stWL.release()}catch(e){}stWL=null}render();return}
+  var go=function(){stGot=false;window.addEventListener('devicemotion',stMotion);stOn=true;
+    try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(l){stWL=l}).catch(function(){})}catch(e){}
+    setTimeout(function(){if(stOn&&!stGot){stMsg='Brak danych z czujnika. Otwórz wersję z własnego adresu (np. GitHub Pages), bo w osadzonym podglądzie czujniki bywają zablokowane.';render()}},3000);
+    render()};
+  if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+    DeviceMotionEvent.requestPermission().then(function(r){if(r==='granted')go();else{stMsg='Brak zgody na czujniki ruchu.';render()}}).catch(function(){stMsg='Nie udało się uzyskać zgody na czujniki ruchu.';render()});
+  }else go();
+}
+function stExtra(){
+  return '<div class="item" style="margin-top:8px"><div><p>Liczenie z czujnika telefonu</p><p class="sub">Eksperymentalne i przybliżone. Działa tylko przy otwartej aplikacji i włączonym ekranie.</p></div><button class="mini" onclick="stToggle()">'+(stOn?'Wyłącz':'Włącz')+'</button></div>'+(stMsg?'<p class="hint">'+stMsg+'</p>':'')
+  +'<div class="chips wrap" style="margin-top:8px"><button onclick="rstDay()">'+(rstA==='d'?'Na pewno? Dotknij ponownie':'Wyzeruj ten dzień')+'</button><button onclick="rstAll()">'+(rstA==='a'?'Na pewno? Dotknij ponownie':'Usuń historię kroków')+'</button></div>'
+  +'<details style="margin-top:12px"><summary style="min-height:44px;display:flex;align-items:center;font-weight:600">Automatyczny import z iPhone’a</summary><p class="hint">W aplikacji Skróty utwórz automatyzację o stałej porze (np. 22:00): pobierz kroki z dzisiaj (akcje Znajdź próbki zdrowia i Oblicz statystyki, suma), a potem Otwórz URL z adresem tej aplikacji i dopiskiem ?kroki= oraz sumą, np. https://adres/?kroki=8450. Strona wpisze liczbę do dzisiejszego dnia. Dane zapiszą się w Safari, więc korzystaj z aplikacji w Safari, a nie z ikony na ekranie głównym. Nazwy akcji mogą się różnić zależnie od wersji iOS.</p></details>';
+}
+function importSteps(){
+  try{var p=new URLSearchParams(location.search),k=p.get('kroki');if(k===null)return;
+    var d=p.get('data')||TODAY;if(!/^\d{4}-\d{2}-\d{2}$/.test(d))d=TODAY;
+    S.steps=S.steps||{};S.steps[d]=Math.max(0,Math.round(num(k)));save();cur=d;view='sleep';history.replaceState(null,'',location.pathname);
+  }catch(e){}
+}
+
+function setGoalForm(e){e.preventDefault();var v=Math.round(num(e.target.g.value));if(v<1000||v>50000)return;S.stg={v:v};save();render()}
+function resetGoalSt(){delete S.stg;save();render()}
+function goSt(){var f=document.getElementById('stg');if(f){f.scrollIntoView({block:'center'});if(f.g)f.g.focus()}}
+
+function stages(e,mi){
+  if(e.dp==null&&e.lt==null)return '';
+  var dp=e.dp||0,lt=e.lt||0,rest=Math.max(0,mi-dp-lt),pc=function(x){return Math.round(x/mi*100)};
+  var seg=function(x,c){return x>0?'<i style="width:'+(x/mi*100)+'%;background:'+c+'"></i>':''};
+  return '<div class="bar" style="display:flex;margin-top:14px">'+seg(dp,'var(--acc)')+seg(lt,'var(--ok)')+seg(rest,'var(--mut)')+'</div>'
+  +'<div class="macros"><div><b style="color:var(--acc)">'+hm(dp)+'</b><span>głęboki ('+pc(dp)+'%)</span></div><div><b style="color:var(--ok)">'+hm(lt)+'</b><span>płytki ('+pc(lt)+'%)</span></div><div><b>'+hm(rest)+'</b><span>pozostałe ('+pc(rest)+'%)</span></div></div>'
+  +'<p class="hint" style="margin-top:10px">Orientacyjnie u dorosłych głęboki sen to około 13–23% nocy, a płytki około 50–60%. Reszta to sen REM i wybudzenia. Dane wpisz z opaski lub zegarka.</p>';
+}
+function avgStages(l){
+  var d=l.filter(function(x){return x.dp!=null}),t=l.filter(function(x){return x.lt!=null});
+  if(!d.length&&!t.length)return '';
+  var a=function(arr,k){return Math.round(arr.reduce(function(s,x){return s+x[k]},0)/arr.length)};
+  return '<div class="stats" style="margin-top:12px">'+(d.length?'<div><b>'+hm(a(d,'dp'))+'</b><span>średnio głęboki sen</span></div>':'')+(t.length?'<div><b>'+hm(a(t,'lt'))+'</b><span>średnio płytki sen</span></div>':'')+'</div>';
+}
+
+var exMax=40;
+var XR='Klatka|Wyciskanie {a} {b}|sztangi,hantli,sztangi na suwnicy Smitha,kettlebell|leżąc,na skosie dodatnim,na skosie ujemnym;Klatka|Rozpiętki z {a} {b}|hantlami,linkami wyciągu,gumami oporowymi|leżąc,na skosie dodatnim,na skosie ujemnym;Klatka|Pompki {a}|klasyczne,szerokie,wąskie,diamentowe,z nogami na podwyższeniu,z rękami na podwyższeniu,z klaskaniem,z obciążeniem,z unoszeniem nogi,na piłce,na gumie oporowej,archer,spiderman,na pięściach;Klatka|Dipy {a}|na poręczach,na poręczach z pochyleniem tułowia,na poręczach z obciążeniem,na ławce,na maszynie,na pierścieniach,z gumą wspomagającą;Klatka|Wyciskanie na maszynie {a}|poziome,skośne,z góry,Hammer,jednorącz,z pauzą;Klatka|Krzyżowanie linek wyciągu {a}|górnych,dolnych,środkowych,jednorącz górnych,jednorącz dolnych,w wykroku,siedząc;Klatka|Pullover {a}|z hantlą leżąc,z hantlą w poprzek ławki,ze sztangą,z kettlebell,na wyciągu stojąc,na wyciągu klęcząc,na maszynie;Klatka|Butterfly {a}|na maszynie,jednorącz,z pauzą,na wyciągu;'
++'Plecy|Podciąganie {a} {b}|nachwytem,podchwytem,neutralnym chwytem,szerokim chwytem,wąskim chwytem|na drążku,z obciążeniem,z gumą wspomagającą,z pauzą na górze;Plecy|Ściąganie drążka wyciągu górnego {a}|nachwytem,podchwytem,neutralnym chwytem,szerokim chwytem,wąskim chwytem,jednorącz,z pauzą,siedząc z oparciem,klęcząc;Plecy|Wiosłowanie sztangą {a}|nachwytem,podchwytem,w opadzie tułowia,z oparciem o ławkę,z pauzą,Pendlay,Yates,wąskim chwytem,szerokim chwytem,na suwnicy Smitha;Plecy|Wiosłowanie hantlą {a}|jednorącz w oparciu o ławkę,jednorącz w opadzie,obiema rękami w opadzie,leżąc na ławce skośnej,w podporze na ławce,z pauzą;Plecy|Wiosłowanie na wyciągu {a}|siedząc wąskim uchwytem,siedząc szerokim uchwytem,siedząc neutralnym uchwytem,siedząc jednorącz,stojąc w opadzie,stojąc jednorącz,z liną do klatki,z pauzą;Plecy|Wiosłowanie na maszynie {a}|z podparciem klatki,Hammer,siedząc,jednorącz,wysokie,niskie,T-bar,z pauzą;Plecy|Wiosłowanie {a}|z kettlebell,z gumą oporową,na TRX,na pierścieniach,australijskie,odwrócone pod stołem,gorylka;Plecy|Martwy ciąg {a}|klasyczny,sumo,rumuński,na prostych nogach,ze sztangą trap,z deficytu,z podwyższenia,z kettlebell,z hantlami,jednonóż,z gumami,z pauzą,na suwnicy Smitha,Zercher,rumuński jednonóż,rumuński z hantlami;Plecy|Szrugsy {a}|ze sztangą,z hantlami,na suwnicy Smitha,na maszynie,z kettlebell,ze sztangą z tyłu,z pauzą,na wyciągu;Plecy|Face pull {a}|z liną,stojąc,klęcząc,siedząc,z gumą oporową,z pauzą,jednorącz,w półklęku;Plecy|Prostowanie tułowia {a}|na ławce rzymskiej,na ławce rzymskiej z obciążeniem,na maszynie,z hantlą,z gumą,na piłce,w leżeniu przodem;Plecy|Unoszenie ramion w opadzie tułowia {a}|z hantlami,na wyciągu,z gumą,na maszynie,leżąc na skosie;Plecy|Good morning {a}|ze sztangą,z gumą,siedząc,na suwnicy Smitha;'
++'Nogi|Przysiad {a}|ze sztangą,ze sztangą z przodu,na suwnicy Smitha,z hantlami,goblet z kettlebell,goblet z hantlą,z gumą,z pauzą,sumo,z wąskim rozstawem,z podwyższonymi piętami,na skrzyni,zatrzymany,dynamiczny,jednonóż,bułgarski z hantlami,bułgarski ze sztangą,hack na maszynie,na maszynie,Zercher,overhead,z wyskokiem;Nogi|Wykroki {a} {b}|w miejscu,chodzone,do tyłu,boczne,skośne,z podwyższenia|z hantlami,ze sztangą,z kettlebell,z gumą,z ciężarem własnym,na suwnicy Smitha;Nogi|Wypychanie na suwnicy {a}|skośnej,poziomej,pionowej,jednonóż,wąsko ułożonymi stopami,szeroko ułożonymi stopami,wysoko ułożonymi stopami,nisko ułożonymi stopami,z pauzą;Nogi|Prostowanie nóg {a}|na maszynie,na maszynie jednonóż,z pauzą,z gumą,z obciążeniem na kostkach,siedząc;Nogi|Uginanie nóg {a}|leżąc na maszynie,siedząc na maszynie,stojąc na maszynie,jednonóż,z pauzą,z hantlą,na piłce,z gumą,na wyciągu,nordic,na ławce skośnej;Nogi|Hip thrust {a}|ze sztangą,z hantlą,z kettlebell,na maszynie,jednonóż,z gumą na kolanach,z pauzą,na suwnicy Smitha,z deficytem,z ciężarem własnym;Nogi|Glute bridge {a}|z ciężarem własnym,jednonóż,z hantlą,z gumą,z pauzą,z uniesioną piętą,na piłce,z uniesieniem stóp;Nogi|Wspięcia na palce {a}|stojąc,siedząc,jednonóż,na suwnicy,na maszynie,ze sztangą,z hantlami,na stopniu,z pauzą,z gumą,na suwnicy Smitha,na suwnicy skośnej;Nogi|Wejścia na podwyższenie {a}|z hantlami,ze sztangą,z ciężarem własnym,bokiem,z kettlebell,z gumą,wysokie,niskie,z wyskokiem;Nogi|Odwodzenie nogi {a}|na wyciągu,z gumą,na maszynie,leżąc bokiem,stojąc z obciążeniem,w podporze klęcznym;Nogi|Przywodzenie nogi {a}|na wyciągu,na maszynie,z gumą,leżąc bokiem,w siadzie;Nogi|Pistolet {a}|z ciężarem własnym,z TRX,z wsparciem,z hantlą,na ławce,z kettlebell;Nogi|Skoki {a}|na skrzynię,z przysiadem,w dal,przez płotki,w miejscu,jednonóż,zeskoki,z wykroku,z obciążeniem,boczne,na stopień;'
++'Barki|Wyciskanie {a} nad głowę {b}|sztangi,hantli,kettlebell,sztangi na suwnicy Smitha,hantli naprzemiennie,hantli neutralnym chwytem,hantli chwytem młotkowym|stojąc,siedząc,z pauzą;Barki|Unoszenie {a} {b}|hantli,linki wyciągu,gumy oporowej|bokiem,w przód,w opadzie,bokiem jednorącz,bokiem siedząc,w przód naprzemiennie;Barki|Wyciskanie Arnolda {a}|siedząc,stojąc,z pauzą,jednorącz,na skosie;Barki|Odwrotne rozpiętki {a}|na maszynie,z hantlami w opadzie,na wyciągu,z gumą,na ławce skośnej,jednorącz na wyciągu,z pauzą,z linkami skrzyżnymi;Barki|Podciąganie sztangi wzdłuż tułowia {a}|wąskim chwytem,szerokim chwytem,na suwnicy Smitha,z hantlami,ze sztangą łamaną,na wyciągu,z kettlebell,z pauzą;Barki|Wyciskanie żołnierskie {a}|ze sztangą,z hantlami,z kettlebell,z gumą,na suwnicy Smitha,push press,z pauzą;Barki|Wyciskanie na maszynie barkowej {a}|siedząc,jednorącz,z pauzą,neutralnym chwytem,Hammer;Barki|Rotacje zewnętrzne barku {a}|z hantlą leżąc na boku,na wyciągu,z gumą,stojąc,siedząc,z pauzą;Barki|Y-T-W {a}|na ławce skośnej,z hantlami,z gumą,na podłodze,na TRX;Barki|Unoszenie {a} w przód|sztangi,talerza,kettlebell,hantli neutralnym chwytem;'
++'Biceps|Uginanie ramion z hantlami {a}|stojąc,siedząc,naprzemiennie,jednocześnie,na ławce skośnej,na ławce skośnej naprzemiennie,w oparciu o ławkę skośną,z supinacją,z pauzą,w podporze o udo;Biceps|Uginanie ramion ze sztangą {a}|prostą stojąc,łamaną stojąc,prostą wąskim chwytem,prostą szerokim chwytem,łamaną na modlitewniku,łamaną siedząc,prostą z pauzą,łamaną z pauzą,na suwnicy Smitha,21 powtórzeń;Biceps|Uginanie ramion na wyciągu {a}|dolnym z drążkiem,dolnym z liną,dolnym jednorącz,górnym obiema rękami,leżąc na plecach,stojąc tyłem,z pauzą;Biceps|Uginanie ramion z gumą {a}|stojąc,siedząc,jednorącz,naprzemiennie,z pauzą;Biceps|Uginanie młotkowe {a}|z hantlami stojąc,z hantlami siedząc,naprzemiennie,jednocześnie,z liną na wyciągu,z gumą,na ławce skośnej,w poprzek ciała,z pauzą;Biceps|Uginanie na modlitewniku {a}|ze sztangą łamaną,ze sztangą prostą,z hantlą jednorącz,na maszynie,na wyciągu,młotkowe,z pauzą;Biceps|Uginanie skoncentrowane {a}|z hantlą siedząc,na wyciągu,z gumą,z kettlebell,z pauzą;Biceps|Uginanie Zottmana {a}|z hantlami,siedząc,na skosie,na wyciągu,z pauzą;Biceps|Uginanie odwrotne {a}|ze sztangą,z hantlami,na wyciągu,z gumą,ze sztangą łamaną,z pauzą;'
++'Triceps|Wyciskanie francuskie {a}|ze sztangą łamaną leżąc,ze sztangą prostą leżąc,z hantlami leżąc,z hantlą oburącz siedząc,z hantlą oburącz stojąc,jednorącz z hantlą,z liną na wyciągu,na skosie,na skosie ujemnym,na suwnicy Smitha,z gumą,z pauzą;Triceps|Prostowanie ramion {a}|na wyciągu z drążkiem,na wyciągu z liną,na wyciągu z drążkiem V,na wyciągu jednorącz nachwytem,na wyciągu jednorącz podchwytem,znad głowy z liną,znad głowy z hantlą,znad głowy z hantlą jednorącz,znad głowy z gumą,w opadzie z hantlą,w opadzie na wyciągu,z gumą,w podporze tyłem,z pauzą;Triceps|Wyciskanie wąskim chwytem {a}|leżąc,na skosie dodatnim,na suwnicy Smitha,z hantlami neutralnym chwytem,z pauzą,sztangi łamanej,w stojaku;Triceps|Dipy na ławce {a}|z ugiętymi nogami,z wyprostowanymi nogami,z obciążeniem,z nogami na podwyższeniu,jednonóż,z pauzą;Triceps|Pompki na triceps {a}|wąskie,diamentowe,na ławce,z łokciami przy ciele,na pochylni,z gumą,z obciążeniem,z asystą;Triceps|Kickback {a}|z hantlą,na wyciągu,z gumą,jednorącz na ławce,oburącz,z linką;Triceps|Triceps na maszynie {a}|siedząc,jednorącz,z pauzą,dip machine,stojąc;'
++'Brzuch i core|Plank {a}|klasyczny,na łokciach,na wyprostowanych rękach,boczny,boczny z uniesieniem nogi,z unoszeniem nogi,z unoszeniem ręki,z dotykaniem barku,na piłce,na TRX,z obciążeniem,odwrócony,dynamiczny,z wiosłowaniem,z rotacją,z podnoszeniem kolana;Brzuch i core|Unoszenie nóg {a}|w zwisie,w zwisie ze zgiętymi kolanami,leżąc,leżąc z obciążeniem,na poręczach,na ławce skośnej,w zwisie bokiem,na ławce rzymskiej,z piłką między stopami,na maszynie;Brzuch i core|Spięcia brzucha {a}|leżąc,na ławce skośnej,na wyciągu klęcząc,na maszynie,z obciążeniem,na piłce,z pauzą,odwrócone,bokiem,z rotacją;Brzuch i core|Rosyjski skręt {a}|z ciężarem,z piłką lekarską,z talerzem,z hantlą,bez ciężaru,na ławce,z uniesionymi stopami,z kettlebell,na wyciągu,z gumą;Brzuch i core|Allahy {a}|na wyciągu klęcząc,na wyciągu stojąc,z liną,z gumą,z pauzą,bokiem;Brzuch i core|Wyciskanie Pallofa {a}|na wyciągu stojąc,z gumą,klęcząc,w wykroku,z krokiem bokiem,z pauzą;Brzuch i core|Dead bug {a}|klasyczny,z ciężarem,z gumą,z piłką,z pauzą,z oddechem,z kettlebell,jednostronny;Brzuch i core|Bird dog {a}|klasyczny,z gumą,z pauzą,z ciężarem,na piłce,z łokciem do kolana,z obciążeniem na plecach;Brzuch i core|Rowerek {a}|leżąc,w zwisie,z obciążeniem,na ławce,wolny,z pauzą,dynamiczny;Brzuch i core|Ab wheel {a}|z kolan,na stojąco,z pauzą,na skos,z TRX,z gumą;Brzuch i core|Wspinaczka {a}|klasyczna,krzyżowa,boczna,na sliderach,wolna,z piłką,z TRX,w zwisie;Brzuch i core|Skłony boczne {a}|z hantlą,z kettlebell,na wyciągu,na ławce rzymskiej,z gumą,ze sztangą,na maszynie,z pauzą;Brzuch i core|Hollow body {a}|klasyczny,z kołysaniem,z gumą,z piłką,z obciążeniem,z uniesionymi rękami;'
++'Cardio i całe ciało|Bieg {a}|na bieżni,w terenie,interwałowy,tempowy,długi spokojny,sprinty 100 m,sprinty pod górę,po schodach,w miejscu,z wysokim unoszeniem kolan,w pochyleniu;Cardio i całe ciało|Marsz {a}|na bieżni,pod górę na bieżni,w terenie,z obciążeniem,z plecakiem,nordic walking,po schodach,szybki,z hantlami;Cardio i całe ciało|Rowerek stacjonarny {a}|spokojny,interwały 30/30,interwały HIIT,tempo,pod górę,sprinty,z oporem,stojąc,regeneracyjny;Cardio i całe ciało|Wioślarz {a}|spokojny,interwały,sprinty 500 m,na dystans 2000 m,tempo,z oporem;Cardio i całe ciało|Orbitrek {a}|spokojny,interwały,pod górę,do tyłu,tempo;Cardio i całe ciało|Kettlebell {a}|swing oburącz,swing jednorącz,swing rosyjski,swing amerykański,martwy ciąg sumo,snatch,clean,clean and press,turkish get-up,przysiad goblet,halo,windmill;Cardio i całe ciało|Burpees {a}|klasyczne,z pompką,z wyskokiem,z przeskokiem,bez pompki,z hantlami,z podciąganiem,bokiem,jednonóż,z klaskaniem;Cardio i całe ciało|Skakanka {a}|podstawowa,podwójna,naprzemienna,jednonóż,boxer,z krzyżowaniem,z wysokim kolanem,szybka;Cardio i całe ciało|Thruster {a}|ze sztangą,z hantlami,z kettlebell,z piłką lekarską,z gumą,jednorącz,z pauzą;Cardio i całe ciało|Rzuty piłką lekarską {a}|w ścianę,nad głową,w podłogę,bokiem,z przysiadu,rotacyjne,z klatki,z wyskokiem;Cardio i całe ciało|Battle ropes {a}|fale naprzemienne,fale jednoczesne,uderzenia,okręgi,rozpiętki,z przysiadu,jednorącz,z wykrokiem;Cardio i całe ciało|Pływanie {a}|kraulem,żabką,grzbietem,motylkiem,interwały,z deską,z kolankiem;'
++'Mobilność i rozciąganie|Rozciąganie {a}|mięśni czworogłowych stojąc,mięśni czworogłowych leżąc bokiem,mięśni dwugłowych siedząc,mięśni dwugłowych stojąc,pośladków leżąc,pośladków w siadzie,łydek przy ścianie,łydek na stopniu,zginaczy bioder w wykroku,przywodzicieli w siadzie motylkowym,przywodzicieli w szerokim rozkroku,klatki piersiowej przy framudze,pleców w pozycji dziecka,barków z ramieniem w poprzek,tricepsu za głową,bicepsu przy ścianie,przedramion,szyi,dolnej części pleców,pasma biodrowo-piszczelowego;Mobilność i rozciąganie|Mobilność {a}|bioder kółka,bioder 90/90,kręgosłupa piersiowego,kręgosłupa kot-krowa,barków kółka,barków z kijem,kostek,nadgarstków,szyi,głęboki przysiad,łopatek,wykrok z rotacją tułowia;Mobilność i rozciąganie|Joga {a}|pies z głową w dół,kobra,dziecko,wojownik I,wojownik II,trójkąt,drzewo,gołąb,kot i krowa,most';
+(function(){
+  var seen={};Object.keys(EXL).forEach(function(k){EXL[k].split(',').forEach(function(n){seen[n]=1})});
+  XR.split(';').forEach(function(r){
+    var p=r.split('|');if(p.length<3)return;
+    var g=p[0],A=p[2].split(','),B=p[3]?p[3].split(','):[''],out=[];
+    A.forEach(function(a){B.forEach(function(b){
+      var n=p[1].replace('{a}',a).replace('{b}',b).replace(/\s+/g,' ').trim();
+      if(!seen[n]){seen[n]=1;out.push(n)}
+    })});
+    if(out.length)EXL[g]=(EXL[g]?EXL[g]+',':'')+out.join(',');
+  });
+})();
+function exCount(){return Object.keys(EXL).reduce(function(s,k){return s+EXL[k].split(',').length},0)}
+
+var rMax=30,rShown=0,rTot=0;
+var GP=[['Kurczak','kurczakiem','kur',150],['Indyk','indykiem','ind',150],['Mielony indyk','mielonym indykiem','mie',130],['Wołowina','wołowiną','wol',130],['Łosoś','łososiem','los',120],['Dorsz','dorszem','dor',170],['Tuńczyk','tuńczykiem','tun',120],['Krewetki','krewetkami','kre',150],['Tofu','tofu','tof',160],['Jajecznica','jajkami','jaj',165]];
+var GC=[['ryżem','ry'],['makaronem','mak'],['kaszą gryczaną','kas'],['kuskusem','kus'],['ziemniakami','zi'],['batatami','bat'],['tortillą','tor'],['chlebem razowym','chl'],['soczewicą','soc']];
+var GV=[['brokułem','bro',150],['szpinakiem','szp',100],['cukinią','cuk',200],['papryką','pap',120],['marchewką','mar',100],['warzywami','war',200],['pomidorami','pom',150],['ogórkiem','ogo',150]];
+var GS=[['oliwą z oliwek','oli',[5,8,12]],['hummusem','hum',[30,40,60]],['jogurtem greckim','jog',[40,60,100]],['fetą','fet',[25,30,40]],['żółtym serem','zol',[20,30,40]],['mozzarellą','moz',[40,60,80]],['awokado','awo',[50,75,100]],['passatą pomidorową','pas',[100,120,150]]];
+(function(){
+  var N=GP.length*GC.length*GV.length*GS.length,T=[420,550,780],M=[1,1.1,1.25],CAT=['Redukcja','Utrzymanie','Masa'],out=[[],[],[]],per=Math.floor(5000/3),cnt=[0,0,0];
+  for(var idx=0;idx<N&&(cnt[0]<per||cnt[1]<per||cnt[2]<per);idx++){
+    var cat=idx%3;if(cnt[cat]>=per)continue;
+    var j=(idx*7919)%N,p=Math.floor(j/(GC.length*GV.length*GS.length)),c=Math.floor(j/(GV.length*GS.length))%GC.length,v=Math.floor(j/GS.length)%GV.length,s=j%GS.length;
+    var P=GP[p],C=GC[c],V=GV[v],S=GS[s],pg=Math.round(P[3]*M[cat]/5)*5,sg=S[2][cat];
+    var nc=ING[P[2]][1]*pg/100+ING[V[1]][1]*V[2]/100+ING[S[1]][1]*sg/100,tgt=T[cat]+((idx*37)%5-2)*35,k=ING[C[1]][1],cg=(tgt-nc)/k*100;
+    cg=C[1]==='tor'?Math.max(60,Math.round(cg/60)*60):C[1]==='chl'?Math.min(200,Math.max(40,Math.round(cg/5)*5)):Math.min(450,Math.max(20,Math.round(cg/5)*5));
+    var nm=C[1]==='tor'?'Wrap z '+P[1]+', '+V[0]+' i '+S[0]:P[0]+' z '+C[0]+', '+V[0]+' i '+S[0];
+    out[cat].push(nm+'|'+P[2]+pg+','+C[1]+cg+','+V[1]+V[2]+','+S[1]+sg);cnt[cat]++;
+  }
+  CAT.forEach(function(k,i){REC[k]=REC[k].concat(gen(out[i].join(';')))});
+})();
+
+function render(){
+  var a=document.getElementById('app'),y=window.scrollY;
+  a.innerHTML=({diet:diet,rec:rec,train:train,sleep:sleep,prog:prog,me:me})[view]();
+  document.querySelectorAll('#nav button').forEach(function(b){if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(view==='train')hintEx(pe);
+  window.scrollTo(0,y);
+}
+document.getElementById('nav').addEventListener('click',function(e){var b=e.target.closest('button');if(b){view=b.dataset.v;render();window.scrollTo(0,0)}});
+function isTxt(el){var t=el&&el.tagName;return t==='INPUT'||t==='TEXTAREA'}
+function inView(el){var r=el.getBoundingClientRect(),h=window.visualViewport?window.visualViewport.height:window.innerHeight;return r.top>=0&&r.bottom<=h-8}
+document.addEventListener('focusin',function(e){
+  if(!isTxt(e.target))return;
+  document.body.classList.add('kb');
+  setTimeout(function(){var a=document.activeElement;if(isTxt(a)&&a.scrollIntoView&&!inView(a))a.scrollIntoView({block:'center'})},300);
+});
+document.addEventListener('focusout',function(){
+  setTimeout(function(){if(!isTxt(document.activeElement))document.body.classList.remove('kb')},150);
+});
+importSteps();
+render();
+</script>
+</body>
+</html>
